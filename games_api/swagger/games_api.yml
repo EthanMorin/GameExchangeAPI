@@ -1,0 +1,419 @@
+openapi: 3.0.0
+info:
+  title: Video Game Exchange API - OpenAPI 3.0.0
+  version: 1.0.0
+servers:
+  - url: Localhost:8080
+tags:
+  - name: games
+    description: Contains a list of games, and actions to that list.
+  - name: users
+    description: Contains a list of users, and actions to that list.
+  - name: exchange
+    description: Contains a list of exchanges, and actions to that list.
+paths:
+  /test:
+    get:
+      tags:
+        - test
+      summary: test the server
+      responses:
+        "200":
+          description: Test successful
+  /games:
+    get:
+      tags:
+        - games
+      summary: Returns a list of all games
+      responses:
+        "200":
+          description: A JSON array of games
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Game"
+        "400":
+          description: Invalid input
+        "500":
+          description: Internal server error
+    post:
+      tags:
+        - games
+      summary: Adds a game to the list.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Game"
+      responses:
+        "201":
+          description: Game added successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Game"
+        "400":
+          description: Invalid input
+        "500":
+          description: Internal server error
+  /games/{id}:
+    get:
+      tags:
+        - games
+      summary: Returns one game by ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The game ID.
+      responses:
+        "200":
+          description: JSON of the found game.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Game"
+        "400":
+          description: Invalid input
+        "404":
+          description: Game not found.
+    patch:
+      tags:
+        - games
+      summary: Updates a property of a game.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The game ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      responses:
+        "200":
+          description: Game updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Game"
+        "404":
+          description: Game not found.
+    delete:
+      tags:
+        - games
+      summary: Removes a game from the exchange list.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The game ID.
+      responses:
+        "204":
+          description: Game removed successfully.
+        "404":
+          description: Game not found.
+  /users:
+    get:
+      tags:
+        - users
+      summary: Returns a list of all users
+      responses:
+        "200":
+          description: A JSON array of users
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Invalid input
+        "500":  
+          description: Internal server error
+    post:
+      tags:
+        - users
+      summary: Adds a game to the list.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "201":
+          description: Game added successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Invalid input
+        "500":
+          description: Internal server error
+  /users/{id}:
+    get:
+      tags:
+        - users
+      summary: Returns one user by ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The user ID.
+      responses:
+        "200":
+          description: JSON of the found user.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "400":
+          description: Invalid input
+        "404":
+          description: User not found.
+    patch:
+      tags:
+        - users
+      summary: Updates a property of a user.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The user ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: User updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: user not found.
+    delete:
+      tags:
+        - users
+      summary: Removes a user.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The user ID.
+      responses:
+        "204":
+          description: User removed successfully.
+        "404":
+          description: User not found.
+  /exchanges/{traderid}/{tradeeid}:
+    post:
+      tags:
+        - exchange
+      summary: Create a new exchange
+      parameters:
+        - in: path
+          name: traderid
+          required: true
+          schema:
+            type: string
+          description: The trader ID.
+        - in: path
+          name: tradeeid
+          required: true
+          schema:
+            type: string
+          description: The tradee ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+                type: object
+                properties:
+                  gameid:
+                    type: string
+      responses:
+        "201":
+          description: Exchange created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exchange"
+        "400":
+          description: Invalid input
+        "500":
+          description: Internal server error
+  /exchanges/{id}:
+    patch:
+      tags:
+        - exchange
+      summary: Update the status of an exchange
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The exchange ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - pending
+                    - accepted
+                    - declined
+      responses:
+        "200":
+          description: Exchange updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exchange"
+        "404":
+          description: Exchange not found.
+    get:
+      tags:
+        - exchange
+      summary: Returns one exchange by ID.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The exchange ID.
+      responses:
+        "200":
+          description: JSON of the found exchange.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exchange"
+        "404":
+          description: Exchange not found.
+components:
+  schemas:
+    Game:
+      type: object
+      properties:
+        id:
+          type: string
+          x-go-type: primitive.ObjectID
+          x-go-type-import:
+            path: go.mongodb.org/mongo-driver/bson/primitive
+          x-oapi-codegen-extra-tags:
+            bson: _id,omitempty
+        name:
+          type: string
+        publisher:
+          type: string
+        release_year:
+          type: string
+        ownerid:
+          type: string
+          x-go-type: primitive.ObjectID
+          x-go-type-import:
+            path: go.mongodb.org/mongo-driver/bson/primitive
+          x-oapi-codegen-extra-tags:
+            bson: _id,omitempty
+        condition:
+          type: string
+          enum:
+            - mint
+            - good
+            - fair
+            - poor
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          x-go-type: primitive.ObjectID
+          x-go-type-import:
+            path: go.mongodb.org/mongo-driver/bson/primitive
+          x-oapi-codegen-extra-tags:
+            bson: _id,omitempty
+        username:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+        street_address:
+          type: string
+        games:
+          type: array
+          items:
+            $ref: "#/components/schemas/Game"
+    Exchange:
+      type: object
+      properties:
+        id:
+          type: string
+          x-go-type: primitive.ObjectID
+          x-go-type-import:
+            path: go.mongodb.org/mongo-driver/bson/primitive
+          x-oapi-codegen-extra-tags:
+            bson: _id,omitempty
+        gameid:
+          type: string
+          x-go-type: primitive.ObjectID
+          x-go-type-import:
+            path: go.mongodb.org/mongo-driver/bson/primitive
+          x-oapi-codegen-extra-tags:
+            bson: _id,omitempty
+        traderid:
+          type: string
+          x-go-type: primitive.ObjectID
+          x-go-type-import:
+            path: go.mongodb.org/mongo-driver/bson/primitive
+          x-oapi-codegen-extra-tags:
+            bson: _id,omitempty
+        tradeeid:
+          type: string
+          x-go-type: primitive.ObjectID
+          x-go-type-import:
+            path: go.mongodb.org/mongo-driver/bson/primitive
+          x-oapi-codegen-extra-tags:
+            bson: _id,omitempty
+        status:
+          type: string
+          enum:
+            - pending
+            - accepted
+            - declined
