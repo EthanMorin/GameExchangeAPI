@@ -47,7 +47,6 @@ func (*API) PostUsers(c *gin.Context) {
 	c.JSON(http.StatusCreated, result)
 }
 
-// TODO: add logic to check if traderid, tradeeid, and gameid are valid and if the trader has the game
 // PostExchangeTraderidTradeeid implements ServerInterface.
 func (*API) PostExchangesTraderidTradeeid(c *gin.Context, traderid string, tradeeid string) {
 	var exchange models.Exchange
@@ -144,14 +143,13 @@ func (*API) PatchUsersId(c *gin.Context, id string) {
 // TODO Impliment
 // PatchExchangeId implements ServerInterface.
 func (*API) PatchExchangesId(c *gin.Context, id string) {
-	var exchange models.Exchange
-	// Switch case based off what the user inputed to bind to enum
-	err := c.ShouldBindJSON(&exchange)
+	var exchangeStatus models.ExchangeStatus
+	err := c.ShouldBindJSON(&exchangeStatus)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing required fields"})
 		return
 	}
-	c.JSON(http.StatusOK, exchange)
+	c.JSON(http.StatusOK, gin.H{"status": exchangeStatus, "id": id})
 }
 
 // DeleteGamesId implements ServerInterface.

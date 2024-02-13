@@ -13,7 +13,7 @@ func PostUser(user *models.User) (*models.User, error) {
 	if user.Email == nil || user.Password == nil || user.StreetAddress == nil || user.Username == nil {
 		return nil, errors.New("All fields are required")
 	}
-	_, err := data.PostUser(user)
+	err := data.PostUser(user)
 	if err != nil {
 		return nil, errors.New("Couldnt post user")
 	}
@@ -46,7 +46,7 @@ func PatchUser(objId string, user *models.User) (*models.User, error) {
 	if err != nil {
 		return nil, errors.New("Invalid object id")
 	}
-	_, err = data.PatchUser(userObjId, user)
+	err = data.PatchUser(userObjId, user)
 	if err != nil {
 		return nil, errors.New("Couldnt patch user")
 	}
@@ -70,7 +70,7 @@ func PostGame(game *models.Game) (*models.Game, error) {
 	if game.Condition == nil || game.Name == nil || game.Ownerid == nil || game.Publisher == nil || game.ReleaseYear == nil {
 		return nil, errors.New("All fields are required")
 	}
-	_, err := data.PostGame(game)
+	err := data.PostGame(game)
 	if err != nil {
 		return nil, errors.New("Couldnt post game")
 	}
@@ -103,7 +103,7 @@ func PatchGame(objId string, game *models.Game) (*models.Game, error) {
 	if err != nil {
 		return nil, errors.New("Invalid object id")
 	}
-	_, err = data.PatchGame(gameObjId, game)
+	err = data.PatchGame(gameObjId, game)
 	if err != nil {
 		return nil, errors.New("Couldnt patch game")
 	}
@@ -123,6 +123,7 @@ func DeleteGame(objId string) error {
 }
 
 // Exchange
+// TODO: add logic to check if traderid, tradeeid, and gameid are valid and if the trader has the game
 func PostExchange(traderId string, tradeeId string, exchange *models.Exchange) (*models.Exchange, error) {
 	if exchange.Gameid == nil {
 		return nil, errors.New("All fields are required")
@@ -139,7 +140,7 @@ func PostExchange(traderId string, tradeeId string, exchange *models.Exchange) (
 	exchange.Tradeeid = &tradeeObjId
 	exchange.Traderid = &traderObjId
 	exchange.Status = &status
-	_, err = data.PostExchange(exchange)
+	err = data.PostExchange(exchange)
 	if err != nil {
 		return nil, errors.New("Couldnt post exchange")
 	}
@@ -156,4 +157,17 @@ func GetExchange(objId string) (*models.Exchange, error) {
 		return nil, errors.New("Couldnt get exchange")
 	}
 	return exchange, nil
+}
+
+// TODO: TEST THIS
+func PatchExchangesId(objId string, exchangeStatus *models.ExchangeStatus) (*models.ExchangeStatus, error) {
+	exchangeObjId, err := primitive.ObjectIDFromHex(objId)
+	if err != nil {
+		return nil, errors.New("Invalid object id")
+	}
+	err = data.PatchExchange(exchangeObjId, exchangeStatus)
+	if err != nil {
+		return nil, errors.New("Couldnt patch exchange")
+	}
+	return exchangeStatus, nil
 }
