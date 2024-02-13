@@ -3,7 +3,7 @@ package services
 import (
 	"context"
 	"fmt"
-	"time"
+	// "time"
 
 	kafka "github.com/segmentio/kafka-go"
 )
@@ -11,11 +11,11 @@ import (
 func StartListener() {
 	topic := "email"
 	partition := 0
-	conn, err := kafka.DialLeader(context.Background(), "tcp", "localhost:9092", topic, partition)
+	conn, err := kafka.DialLeader(context.Background(), "tcp", "kafka:9092", topic, partition)
 	if err != nil {
 		fmt.Println("Error connecting to kafka", err)
 	}
-	conn.SetReadDeadline(time.Now().Add(10 * time.Second))
+	// conn.SetReadDeadline(time.Now().Add(10 * time.Second))
 	batch := conn.ReadBatch(10e3, 1e6)
 
 	b := make([]byte, 10e3)

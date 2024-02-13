@@ -12,7 +12,7 @@ import (
 func connectToKafka() *kafka.Conn {
 	topic := "email"
 	partition := 0
-	conn, err := kafka.DialLeader(context.Background(), "tcp", "localhost:9092", topic, partition)
+	conn, err := kafka.DialLeader(context.Background(), "tcp", "kafka:9092", topic, partition)
 	if err != nil {
 		fmt.Println("Error connecting to kafka", err)
 	}

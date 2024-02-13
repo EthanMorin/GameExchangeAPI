@@ -14,7 +14,7 @@ type API struct{}
 // GetTest implements ServerInterface.
 // TODO: Remove after testing im both this and games_api.yaml
 func (*API) GetTest(c *gin.Context) {
-	c.JSON(http.StatusOK, "Hello, World!")
+	services.SendEmail("test", "test")
 }
 
 // PostGames implements ServerInterface.
