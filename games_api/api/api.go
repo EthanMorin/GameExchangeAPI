@@ -1,13 +1,11 @@
 package api
 
 import (
-	"fmt"
 	"games-api/models"
 	"games-api/services"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type API struct{}
@@ -23,79 +21,53 @@ func (*API) PostGames(c *gin.Context) {
 	var game models.Game
 	
 	if err := c.ShouldBindJSON(&game); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing required fields"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if game.Condition == nil || game.Name == nil || game.Ownerid == nil || game.Publisher == nil || game.ReleaseYear == nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "All fields are required"})
-		return
-	}
-	fmt.Print(&game)
 	result, err := services.PostGame(&game)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert game"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, result.InsertedID)
+	c.JSON(http.StatusCreated, result)
 }
 
 // PostUsers implements ServerInterface.
 func (*API) PostUsers(c *gin.Context) {
 	var user models.User
 	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing required fields"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
-	}
-	if user.Email == nil || user.Password == nil || user.StreetAddress == nil || user.Username == nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "All fields are required"})
 	}
 	result, err := services.PostUser(&user)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert user"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, result.InsertedID)
+	c.JSON(http.StatusCreated, result)
 }
 
 // TODO: add logic to check if traderid, tradeeid, and gameid are valid and if the trader has the game
 // PostExchangeTraderidTradeeid implements ServerInterface.
 func (*API) PostExchangesTraderidTradeeid(c *gin.Context, traderid string, tradeeid string) {
-	// var exchange models.Exchange
-	// if err := c.ShouldBindJSON(&exchange); err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Missing required fields"})
-	// 	return
-	// }
-	// if exchange.Gameid == nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "All fields are required"})
-	// 	return
-	// }
-	// traderId, err := primitive.ObjectIDFromHex(traderid)
-	// if err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid traderid"})
-	// 	return
-	// }
-	// tradeeId, err := primitive.ObjectIDFromHex(tradeeid)
-	// if err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid tradeeid"})
-	// 	return
-	// }
-	// status := models.ExchangeStatusPending
-	// exchange.Tradeeid = &tradeeId
-	// exchange.Traderid = &traderId
-	// exchange.Status = &status
-	// result, err := services.PostExchange(&exchange)
-	// if err != nil {
-	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert exchange"})
-	// 	return
-	// }
-	// c.JSON(http.StatusCreated, result.InsertedID)
+	var exchange models.Exchange
+	if err := c.ShouldBindJSON(&exchange); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing required fields"})
+		return
+	}
+	result, err := services.PostExchange(traderid, tradeeid, &exchange)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusCreated, result)
 }
 
 // GetGames implements ServerInterface.
 func (*API) GetGames(c *gin.Context) {
 	games, err := services.GetGames()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get games"})
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, games)
@@ -103,14 +75,9 @@ func (*API) GetGames(c *gin.Context) {
 
 // GetGamesId implements ServerInterface.
 func (*API) GetGamesId(c *gin.Context, id string) {
-	objId, err := primitive.ObjectIDFromHex(id)
+	result, err := services.GetGame(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id"})
-		return
-	}
-	result, err := services.GetGame(objId)
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Game not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, result)
@@ -120,7 +87,7 @@ func (*API) GetGamesId(c *gin.Context, id string) {
 func (*API) GetUsers(c *gin.Context) {
 	users, err := services.GetUsers()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to get users"})
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, users)
@@ -128,14 +95,9 @@ func (*API) GetUsers(c *gin.Context) {
 
 // GetUsersId implements ServerInterface.
 func (*API) GetUsersId(c *gin.Context, id string) {
-	objId, err := primitive.ObjectIDFromHex(id)
+	result, err := services.GetUser(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id"})
-		return
-	}
-	result, err := services.GetUser(objId)
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, result)
@@ -143,56 +105,39 @@ func (*API) GetUsersId(c *gin.Context, id string) {
 
 // GetExchangeId implements ServerInterface.
 func (*API) GetExchangesId(c *gin.Context, id string) {
-	objId, err := primitive.ObjectIDFromHex(id)
+	result, err := services.GetExchange(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id"})
-		return
-	}
-	result, err := services.GetExchange(objId)
-	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Exchange not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, result)
 }
 
-// TODO Test
 // PatchGamesId implements ServerInterface.
 func (*API) PatchGamesId(c *gin.Context, id string) {
-	objId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id"})
-		return
-	}
 	var updatedStatus models.Game
-	err = c.ShouldBindJSON(&updatedStatus)
+	err := c.ShouldBindJSON(&updatedStatus)
 	if err != nil || updatedStatus.Condition == nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing required fields"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	result, err := services.PatchGame(objId, &updatedStatus)
+	result, err := services.PatchGame(id, &updatedStatus)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update game"})
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, result)
 }
 
-// TODO Test
 // PatchUsersId implements ServerInterface.
 func (*API) PatchUsersId(c *gin.Context, id string) {
-	objId, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id"})
-		return
-	}
 	var updatedUser models.User
-	err = c.ShouldBindJSON(&updatedUser)
+	err := c.ShouldBindJSON(&updatedUser)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing required fields"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	services.PatchUser(objId, &updatedUser)
+	services.PatchUser(id, &updatedUser)
 	c.JSON(http.StatusOK, updatedUser)
 }
 
@@ -211,28 +156,19 @@ func (*API) PatchExchangesId(c *gin.Context, id string) {
 
 // DeleteGamesId implements ServerInterface.
 func (*API) DeleteGamesId(c *gin.Context, id string) {
-	objId, err := primitive.ObjectIDFromHex(id)
+	err := services.DeleteGame(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
-	}
-	services.DeleteGame(objId)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete game"})
 	}
 	c.Status(http.StatusNoContent)
 }
 
 // DeleteUsersId implements ServerInterface.
 func (*API) DeleteUsersId(c *gin.Context, id string) {
-	objId, err := primitive.ObjectIDFromHex(id)
+	err := services.DeleteUser(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid id"})
-		return
-	}
-	services.DeleteUser(objId)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete user"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	c.Status(http.StatusNoContent)

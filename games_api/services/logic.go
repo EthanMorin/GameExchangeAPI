@@ -1,132 +1,159 @@
 package services
 
-// TODO move logic from api/api.go to here
-// TODO: break out logic more
-
 import (
 	"games-api/data"
 	"games-api/models"
-	"context"
 
-	"go.mongodb.org/mongo-driver/bson"
+	"github.com/go-errors/errors"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
-// Games
-func PostGame(game *models.Game) (*mongo.InsertOneResult, error) {
-	result, err := data.GameCollection().InsertOne(context.Background(), &game)
+// User
+func PostUser(user *models.User) (*models.User, error) {
+	if user.Email == nil || user.Password == nil || user.StreetAddress == nil || user.Username == nil {
+		return nil, errors.New("All fields are required")
+	}
+	_, err := data.PostUser(user)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("Couldnt post user")
 	}
-	return result, nil
-}
-
-func GetGames() (*[]models.Game, error) {
-	var games []models.Game
-	curser, err := data.GameCollection().Find(context.Background(), bson.M{})
-	if err != nil {
-		return nil, err
-	}
-	if err := curser.All(context.Background(), &games); err != nil {
-		return nil, err
-	}
-	return &games, nil
-}
-
-func GetGame(objId primitive.ObjectID) (*models.Game, error) {
-	var game models.Game
-	if err := data.GameCollection().FindOne(context.Background(), bson.M{"_id": objId}).Decode(&game); err != nil {
-		return nil, err
-	}
-	return &game, nil
-}
-
-func PatchGame(objId primitive.ObjectID, game *models.Game) (*mongo.UpdateResult, error) {
-	result, err := data.GameCollection().UpdateOne(context.Background(), bson.M{"_id": objId}, bson.M{"$set": bson.M{"condition": &game.Condition}})
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
-}
-
-func DeleteGame(objId primitive.ObjectID) error {
-	_, err := data.GameCollection().DeleteOne(context.Background(), bson.M{"_id": objId})
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// Users
-func PostUser(user *models.User) (*mongo.InsertOneResult, error) {
-	result, err := data.UserCollection().InsertOne(context.Background(), &user)
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
+	return user, nil
 }
 
 func GetUsers() (*[]models.User, error) {
-	var users []models.User
-	curser, err := data.UserCollection().Find(context.Background(), bson.M{})
+	users, err := data.GetUsers()
 	if err != nil {
-		return nil, err
+		return nil, errors.New("Couldnt get users")
 	}
-	if err := curser.All(context.Background(), &users); err != nil {
-		return nil, err
-	}
-	return &users, nil
+	return users, nil
 }
 
-func GetUser(objId primitive.ObjectID) (*models.User, error) {
-	var user models.User
-	if err := data.UserCollection().FindOne(context.Background(), bson.M{"_id": objId}).Decode(&user); err != nil {
-		return nil, err
+func GetUser(objId string) (*models.User, error) {
+	userObjId, err := primitive.ObjectIDFromHex(objId)
+	if err != nil {
+		return nil, errors.New("Invalid object id")
 	}
-	return &user, nil
+	user, err := data.GetUser(userObjId)
+	if err != nil {
+		return nil, errors.New("Couldnt get user")
+	}
+	return user, nil
 }
 
-func PatchUser(objId primitive.ObjectID, user *models.User) (*mongo.UpdateResult, error) {
-	result, err := data.UserCollection().UpdateOne(context.Background(), bson.M{"_id": objId}, bson.M{"$set": bson.M{"password": &user.Password}})
+// TODO: TEST THIS
+func PatchUser(objId string, user *models.User) (*models.User, error) {
+	userObjId, err := primitive.ObjectIDFromHex(objId)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("Invalid object id")
 	}
-	return result, nil
+	_, err = data.PatchUser(userObjId, user)
+	if err != nil {
+		return nil, errors.New("Couldnt patch user")
+	}
+	return user, nil
 }
 
-
-func DeleteUser(objId primitive.ObjectID) error {
-	_, err := data.UserCollection().DeleteOne(context.Background(), bson.M{"_id": objId})
+func DeleteUser(objId string) error {
+	userObjId, err := primitive.ObjectIDFromHex(objId)
 	if err != nil {
-		return err
+		return errors.New("Invalid object id")
+	}
+	err = data.DeleteUser(userObjId)
+	if err != nil {
+		return errors.New("Couldnt delete user")
 	}
 	return nil
 }
 
-// Exchanges
-// TODO: add more logic to check if users exist and own game
-func PostExchange(exchange *models.Exchange) (*mongo.InsertOneResult, error) {
-	result, err := data.ExchangeCollection().InsertOne(context.Background(), &exchange)
-	if err != nil {
-		return nil, err
+// Game
+func PostGame(game *models.Game) (*models.Game, error) {
+	if game.Condition == nil || game.Name == nil || game.Ownerid == nil || game.Publisher == nil || game.ReleaseYear == nil {
+		return nil, errors.New("All fields are required")
 	}
-	return result, nil
+	_, err := data.PostGame(game)
+	if err != nil {
+		return nil, errors.New("Couldnt post game")
+	}
+	return game, nil
 }
 
-func GetExchange(objId primitive.ObjectID) (*models.Exchange, error) {
-	var exchange models.Exchange
-	if err := data.ExchangeCollection().FindOne(context.Background(), bson.M{"_id": objId}).Decode(&exchange); err != nil {
-		return nil, err
+func GetGames() (*[]models.Game, error) {
+	games, err := data.GetGames()
+	if err != nil {
+		return nil, errors.New("Couldnt get games")
 	}
-	return &exchange, nil
+	return games, nil
 }
 
-// Helper functions
-func GetObjectID(id string) (primitive.ObjectID, error) {
-	objId, err := primitive.ObjectIDFromHex(id)
+func GetGame(objId string) (*models.Game, error) {
+	gameObjId, err := primitive.ObjectIDFromHex(objId)
 	if err != nil {
-		return primitive.NilObjectID, err
+		return nil, errors.New("Invalid object id")
 	}
-	return objId, nil
+	game, err := data.GetGame(gameObjId)
+	if err != nil {
+		return nil, errors.New("Couldnt get game")
+	}
+	return game, nil
+}
+
+// TODO: TEST THIS
+func PatchGame(objId string, game *models.Game) (*models.Game, error) {
+	gameObjId, err := primitive.ObjectIDFromHex(objId)
+	if err != nil {
+		return nil, errors.New("Invalid object id")
+	}
+	_, err = data.PatchGame(gameObjId, game)
+	if err != nil {
+		return nil, errors.New("Couldnt patch game")
+	}
+	return game, nil
+}
+
+func DeleteGame(objId string) error {
+	gameObjId, err := primitive.ObjectIDFromHex(objId)
+	if err != nil {
+		return errors.New("Invalid object id")
+	}
+	err = data.DeleteGame(gameObjId)
+	if err != nil {
+		return errors.New("Couldnt delete game")
+	}
+	return nil
+}
+
+// Exchange
+func PostExchange(traderId string, tradeeId string, exchange *models.Exchange) (*models.Exchange, error) {
+	if exchange.Gameid == nil {
+		return nil, errors.New("All fields are required")
+	}
+	traderObjId, err := primitive.ObjectIDFromHex(traderId)
+	if err != nil {
+		return nil, errors.New("Invalid traderid")
+	}
+	tradeeObjId, err := primitive.ObjectIDFromHex(tradeeId)
+	if err != nil {
+		return nil, errors.New("Invalid tradeeid")
+	}
+	status := models.ExchangeStatusPending
+	exchange.Tradeeid = &tradeeObjId
+	exchange.Traderid = &traderObjId
+	exchange.Status = &status
+	_, err = data.PostExchange(exchange)
+	if err != nil {
+		return nil, errors.New("Couldnt post exchange")
+	}
+	return exchange, nil
+}
+
+func GetExchange(objId string) (*models.Exchange, error) {
+	exchangeObjId, err := primitive.ObjectIDFromHex(objId)
+	if err != nil {
+		return nil, errors.New("Invalid object id")
+	}
+	exchange, err := data.GetExchange(exchangeObjId)
+	if err != nil {
+		return nil, errors.New("Couldnt get exchange")
+	}
+	return exchange, nil
 }

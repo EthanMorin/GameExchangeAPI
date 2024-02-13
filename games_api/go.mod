@@ -5,6 +5,7 @@ go 1.22.0
 require (
 	github.com/getkin/kin-openapi v0.123.0
 	github.com/gin-gonic/gin v1.9.1
+	github.com/go-errors/errors v1.5.1
 	github.com/oapi-codegen/gin-middleware v1.0.1
 	github.com/oapi-codegen/runtime v1.1.1
 	github.com/segmentio/kafka-go v0.4.47
