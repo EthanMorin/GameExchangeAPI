@@ -6,18 +6,19 @@ import (
 
 	"github.com/go-errors/errors"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // User
-func PostUser(user *models.User) (*models.User, error) {
+func PostUser(user *models.User) (*mongo.InsertOneResult, error){
 	if user.Email == nil || user.Password == nil || user.StreetAddress == nil || user.Username == nil {
 		return nil, errors.New("All fields are required")
 	}
-	err := data.PostUser(user)
+	result, err := data.PostUser(user)
 	if err != nil {
 		return nil, errors.New("Couldnt post user")
 	}
-	return user, nil
+	return result, nil
 }
 
 func GetUsers() (*[]models.User, error) {
@@ -41,16 +42,16 @@ func GetUser(objId string) (*models.User, error) {
 }
 
 // TODO: TEST THIS
-func PatchUser(objId string, user *models.User) (*models.User, error) {
+func PatchUser(objId string, user *models.User) (*mongo.UpdateResult, error){
 	userObjId, err := primitive.ObjectIDFromHex(objId)
 	if err != nil {
 		return nil, errors.New("Invalid object id")
 	}
-	err = data.PatchUser(userObjId, user)
+	result, err := data.PatchUser(userObjId, user)
 	if err != nil {
 		return nil, errors.New("Couldnt patch user")
 	}
-	return user, nil
+	return result, nil
 }
 
 func DeleteUser(objId string) error {
@@ -66,15 +67,15 @@ func DeleteUser(objId string) error {
 }
 
 // Game
-func PostGame(game *models.Game) (*models.Game, error) {
+func PostGame(game *models.Game) (*mongo.InsertOneResult, error){
 	if game.Condition == nil || game.Name == nil || game.Ownerid == nil || game.Publisher == nil || game.ReleaseYear == nil {
 		return nil, errors.New("All fields are required")
 	}
-	err := data.PostGame(game)
+	result, err := data.PostGame(game)
 	if err != nil {
 		return nil, errors.New("Couldnt post game")
 	}
-	return game, nil
+	return result, nil
 }
 
 func GetGames() (*[]models.Game, error) {
@@ -98,16 +99,16 @@ func GetGame(objId string) (*models.Game, error) {
 }
 
 // TODO: TEST THIS
-func PatchGame(objId string, game *models.Game) (*models.Game, error) {
+func PatchGame(objId string, game *models.Game) (*mongo.UpdateResult, error){
 	gameObjId, err := primitive.ObjectIDFromHex(objId)
 	if err != nil {
 		return nil, errors.New("Invalid object id")
 	}
-	err = data.PatchGame(gameObjId, game)
+	result, err := data.PatchGame(gameObjId, game)
 	if err != nil {
 		return nil, errors.New("Couldnt patch game")
 	}
-	return game, nil
+	return result, nil
 }
 
 func DeleteGame(objId string) error {
@@ -124,7 +125,7 @@ func DeleteGame(objId string) error {
 
 // Exchange
 // TODO: add logic to check if traderid, tradeeid, and gameid are valid and if the trader has the game
-func PostExchange(traderId string, tradeeId string, exchange *models.Exchange) (*models.Exchange, error) {
+func PostExchange(traderId string, tradeeId string, exchange *models.Exchange) (*mongo.InsertOneResult, error){
 	if exchange.Gameid == nil {
 		return nil, errors.New("All fields are required")
 	}
@@ -140,11 +141,11 @@ func PostExchange(traderId string, tradeeId string, exchange *models.Exchange) (
 	exchange.Tradeeid = &tradeeObjId
 	exchange.Traderid = &traderObjId
 	exchange.Status = &status
-	err = data.PostExchange(exchange)
+	result, err := data.PostExchange(exchange)
 	if err != nil {
 		return nil, errors.New("Couldnt post exchange")
 	}
-	return exchange, nil
+	return result, nil
 }
 
 func GetExchange(objId string) (*models.Exchange, error) {
@@ -160,14 +161,14 @@ func GetExchange(objId string) (*models.Exchange, error) {
 }
 
 // TODO: TEST THIS
-func PatchExchangesId(objId string, exchangeStatus *models.ExchangeStatus) (*models.ExchangeStatus, error) {
+func PatchExchangesId(objId string, exchangeStatus *models.ExchangeStatus) (*mongo.UpdateResult, error){
 	exchangeObjId, err := primitive.ObjectIDFromHex(objId)
 	if err != nil {
 		return nil, errors.New("Invalid object id")
 	}
-	err = data.PatchExchange(exchangeObjId, exchangeStatus)
+	result, err := data.PatchExchange(exchangeObjId, exchangeStatus)
 	if err != nil {
 		return nil, errors.New("Couldnt patch exchange")
 	}
-	return exchangeStatus, nil
+	return result, nil
 }
