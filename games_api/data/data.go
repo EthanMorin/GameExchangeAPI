@@ -33,3 +33,4 @@ func GameCollection() *mongo.Collection {
 func ExchangeCollection() *mongo.Collection {
 	return client.Database("Games").Collection("exchanges")
 }
+

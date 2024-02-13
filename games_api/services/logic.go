@@ -1,6 +1,7 @@
 package services
 
 // TODO move logic from api/api.go to here
+// TODO: break out logic more
 
 import (
 	"games-api/data"
