@@ -31,11 +31,11 @@ const (
 
 // Exchange defines model for Exchange.
 type Exchange struct {
-	Gameid   *primitive.ObjectID `bson:"_id,omitempty" json:"gameid,omitempty"`
+	Gameid   *primitive.ObjectID `bson:"gameid,omitempty" json:"gameid,omitempty"`
 	Id       *primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
 	Status   *ExchangeStatus     `json:"status,omitempty"`
-	Tradeeid *primitive.ObjectID `bson:"_id,omitempty" json:"tradeeid,omitempty"`
-	Traderid *primitive.ObjectID `bson:"_id,omitempty" json:"traderid,omitempty"`
+	Tradeeid *primitive.ObjectID `bson:"tradeeid,omitempty" json:"tradeeid,omitempty"`
+	Traderid *primitive.ObjectID `bson:"traderid,omitempty" json:"traderid,omitempty"`
 }
 
 // ExchangeStatus defines model for Exchange.Status.
@@ -46,7 +46,7 @@ type Game struct {
 	Condition   *GameCondition      `json:"condition,omitempty"`
 	Id          *primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
 	Name        *string             `json:"name,omitempty"`
-	Ownerid     *primitive.ObjectID `bson:"_id,omitempty" json:"ownerid,omitempty"`
+	Ownerid     *primitive.ObjectID `bson:"ownerid,omitempty" json:"ownerid,omitempty"`
 	Publisher   *string             `json:"publisher,omitempty"`
 	ReleaseYear *string             `json:"release_year,omitempty"`
 }

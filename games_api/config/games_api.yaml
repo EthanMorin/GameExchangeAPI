@@ -342,7 +342,7 @@ components:
           x-go-type-import:
             path: go.mongodb.org/mongo-driver/bson/primitive
           x-oapi-codegen-extra-tags:
-            bson: _id,omitempty
+            bson: ownerid,omitempty
         condition:
           type: string
           enum:
@@ -388,21 +388,21 @@ components:
           x-go-type-import:
             path: go.mongodb.org/mongo-driver/bson/primitive
           x-oapi-codegen-extra-tags:
-            bson: _id,omitempty
+            bson: gameid,omitempty
         traderid:
           type: string
           x-go-type: primitive.ObjectID
           x-go-type-import:
             path: go.mongodb.org/mongo-driver/bson/primitive
           x-oapi-codegen-extra-tags:
-            bson: _id,omitempty
+            bson: traderid,omitempty
         tradeeid:
           type: string
           x-go-type: primitive.ObjectID
           x-go-type-import:
             path: go.mongodb.org/mongo-driver/bson/primitive
           x-oapi-codegen-extra-tags:
-            bson: _id,omitempty
+            bson: tradeeid,omitempty
         status:
           type: string
           enum:

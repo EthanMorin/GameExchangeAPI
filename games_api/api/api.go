@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"games-api/models"
 	"games-api/services"
 	"net/http"
@@ -20,6 +21,7 @@ func (*API) GetTest(c *gin.Context) {
 // PostGames implements ServerInterface.
 func (*API) PostGames(c *gin.Context) {
 	var game models.Game
+	
 	if err := c.ShouldBindJSON(&game); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing required fields"})
 		return
@@ -28,6 +30,7 @@ func (*API) PostGames(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "All fields are required"})
 		return
 	}
+	fmt.Print(&game)
 	result, err := services.PostGame(&game)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert game"})
@@ -57,35 +60,35 @@ func (*API) PostUsers(c *gin.Context) {
 // TODO: add logic to check if traderid, tradeeid, and gameid are valid and if the trader has the game
 // PostExchangeTraderidTradeeid implements ServerInterface.
 func (*API) PostExchangesTraderidTradeeid(c *gin.Context, traderid string, tradeeid string) {
-	var exchange models.Exchange
-	if err := c.ShouldBindJSON(&exchange); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing required fields"})
-		return
-	}
-	if exchange.Gameid == nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "All fields are required"})
-		return
-	}
-	traderId, err := primitive.ObjectIDFromHex(traderid)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid traderid"})
-		return
-	}
-	tradeeId, err := primitive.ObjectIDFromHex(tradeeid)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid tradeeid"})
-		return
-	}
-	status := models.ExchangeStatusPending
-	exchange.Tradeeid = &tradeeId
-	exchange.Traderid = &traderId
-	exchange.Status = &status
-	result, err := services.PostExchange(&exchange)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert exchange"})
-		return
-	}
-	c.JSON(http.StatusCreated, result.InsertedID)
+	// var exchange models.Exchange
+	// if err := c.ShouldBindJSON(&exchange); err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Missing required fields"})
+	// 	return
+	// }
+	// if exchange.Gameid == nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "All fields are required"})
+	// 	return
+	// }
+	// traderId, err := primitive.ObjectIDFromHex(traderid)
+	// if err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid traderid"})
+	// 	return
+	// }
+	// tradeeId, err := primitive.ObjectIDFromHex(tradeeid)
+	// if err != nil {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid tradeeid"})
+	// 	return
+	// }
+	// status := models.ExchangeStatusPending
+	// exchange.Tradeeid = &tradeeId
+	// exchange.Traderid = &traderId
+	// exchange.Status = &status
+	// result, err := services.PostExchange(&exchange)
+	// if err != nil {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to insert exchange"})
+	// 	return
+	// }
+	// c.JSON(http.StatusCreated, result.InsertedID)
 }
 
 // GetGames implements ServerInterface.
