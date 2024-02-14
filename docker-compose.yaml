@@ -55,7 +55,7 @@ services:
       - "8081"
     networks:
       - exchange
-  # Zoo Keeper !!might not be needed!!
+  # Zoo Keeper: https://hub.docker.com/r/bitnami/zookeeper !!might not be needed!!
   zookeeper:
     image: bitnami/zookeeper:latest
     ports:
@@ -66,7 +66,7 @@ services:
       - zoo_data:/bitnami
     networks:
       - exchange
-  # Kafka
+  # Kafka: https://hub.docker.com/r/bitnami/kafka
   kafka:
     image: bitnami/kafka:latest
     ports:
@@ -79,6 +79,11 @@ services:
       - zookeeper
     networks:
       - exchange
+    # Promethius: https://hub.docker.com/r/bitnami/prometheus
+  # prometheus:
+  #   image: bitnami/prometheus:latest
+  #   ports:
+  #     - "9090"
 volumes:
   db_data: {}
   kafka_data: {}
