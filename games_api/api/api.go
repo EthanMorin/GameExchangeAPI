@@ -51,7 +51,7 @@ func (*API) PostUsers(c *gin.Context) {
 func (*API) PostExchangesTraderidTradeeid(c *gin.Context, traderid string, tradeeid string) {
 	var exchange models.Exchange
 	if err := c.ShouldBindJSON(&exchange); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing required fields"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	result, err := services.PostExchange(traderid, tradeeid, &exchange)
@@ -140,16 +140,20 @@ func (*API) PatchUsersId(c *gin.Context, id string) {
 	c.JSON(http.StatusOK, updatedUser)
 }
 
-// TODO Impliment
 // PatchExchangeId implements ServerInterface.
 func (*API) PatchExchangesId(c *gin.Context, id string) {
 	var exchangeStatus models.ExchangeStatus
 	err := c.ShouldBindJSON(&exchangeStatus)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Missing required fields"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"status": exchangeStatus, "id": id})
+	result, err := services.PatchExchangesId(id, &exchangeStatus)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, result)
 }
 
 // DeleteGamesId implements ServerInterface.
