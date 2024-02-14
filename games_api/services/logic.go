@@ -29,6 +29,7 @@ func GetUsers() (*[]models.User, error) {
 	return users, nil
 }
 
+
 func GetUser(objId string) (*models.User, error) {
 	userObjId, err := primitive.ObjectIDFromHex(objId)
 	if err != nil {
