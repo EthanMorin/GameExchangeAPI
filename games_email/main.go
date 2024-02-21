@@ -1,11 +1,9 @@
 package main
 
 import (
-	"fmt"
-	"games-email/services"
+	"games-email/mq"
 )
 
 func main() {
-	fmt.Println("Starting listener")
-	services.StartListener()
-}	
+	mq.StartListener()
+}

@@ -1,6 +1,6 @@
 // Reference for how to use kafka-go
 // https://github.com/segmentio/kafka-go
-package services
+package mq
 
 import (
 	"context"
