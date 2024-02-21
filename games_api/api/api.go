@@ -176,6 +176,8 @@ func (*API) DeleteUsersId(c *gin.Context, id string) {
 	c.Status(http.StatusNoContent)
 }
 
+
+
 func NewAPI() *API {
 	return &API{}
 }
