@@ -81,18 +81,18 @@ services:
       - exchange
   # Promethius: https://hub.docker.com/r/bitnami/prometheus
   prometheus:
-    image: bitnami/prometheus:latest
+    build: ./games_prometheus
     ports:
-      - "9090"
-    volumes:
-      - pro_data
+      - "9090:9090"
+    # volumes:
+    #   - pro_data
     networks:
       - exchange
 volumes:
   db_data: {}
   kafka_data: {}
   zoo_data: {}
-  pro_data: {}
+  # pro_data: {}
 networks:
   exchange:
     driver: bridge
