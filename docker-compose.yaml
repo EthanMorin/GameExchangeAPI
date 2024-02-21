@@ -79,15 +79,20 @@ services:
       - zookeeper
     networks:
       - exchange
-    # Promethius: https://hub.docker.com/r/bitnami/prometheus
-  # prometheus:
-  #   image: bitnami/prometheus:latest
-  #   ports:
-  #     - "9090"
+  # Promethius: https://hub.docker.com/r/bitnami/prometheus
+  prometheus:
+    image: bitnami/prometheus:latest
+    ports:
+      - "9090"
+    volumes:
+      - pro_data
+    networks:
+      - exchange
 volumes:
   db_data: {}
   kafka_data: {}
   zoo_data: {}
+  pro_data: {}
 networks:
   exchange:
     driver: bridge
