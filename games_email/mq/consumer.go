@@ -2,8 +2,8 @@ package mq
 
 import (
 	"fmt"
-	"github.com/confluentinc/confluent-kafka-go/kafka"
 	"os"
+	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
 func StartListener() {

@@ -13,9 +13,9 @@ RUN go mod download
 COPY . .
 
 # Build
-# RUN go get -d -v
-# RUN go build -o /gamesapi
-RUN CGO_ENABLED=0 GOOS=linux go build -o /gamesapi
+RUN go get -d -v
+RUN go build -o /gamesapi
+# RUN CGO_ENABLED=0 GOOS=linux go build -o /gamesapi
 
 EXPOSE 8080
 
