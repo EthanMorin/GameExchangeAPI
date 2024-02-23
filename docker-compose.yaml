@@ -9,6 +9,7 @@ services:
       - api0
       - api1
       - api2
+    restart: on-failure
     networks:
       - exchange
   # APIS
@@ -19,6 +20,8 @@ services:
     depends_on:
       - database
       - email
+      - kafka
+    restart: on-failure
     networks:
       - exchange
   api1:
@@ -28,6 +31,8 @@ services:
     depends_on:
       - database
       - email
+      - kafka
+    restart: on-failure
     networks:
       - exchange
   api2:
@@ -37,6 +42,8 @@ services:
     depends_on:
       - database
       - email
+      - kafka
+    restart: on-failure
     networks:
       - exchange
   # DataBase
@@ -46,6 +53,7 @@ services:
       - "27017:27017"
     volumes:
       - db_data:/data/db
+    restart: on-failure
     networks:
       - exchange
   # Email Service
@@ -53,6 +61,9 @@ services:
     build: ./games_email
     ports:
       - "8081"
+    depends_on:
+      - kafka
+    restart: on-failure
     networks:
       - exchange
   # Zoo Keeper: https://hub.docker.com/r/bitnami/zookeeper !!might not be needed!!
@@ -64,6 +75,7 @@ services:
       - ALLOW_ANONYMOUS_LOGIN=yes
     volumes:
       - zoo_data:/bitnami
+    restart: on-failure
     networks:
       - exchange
   # Kafka: https://hub.docker.com/r/bitnami/kafka
@@ -79,6 +91,7 @@ services:
       - kafka_data:/bitnami
     depends_on:
       - zookeeper
+    restart: on-failure
     networks:
       - exchange
   # Promethius: https://hub.docker.com/r/bitnami/prometheus
@@ -88,6 +101,7 @@ services:
       - "9090:9090"
     volumes:
       - pro_data:/etc/prometheus_data
+    restart: on-failure
     networks:
       - exchange
 volumes:

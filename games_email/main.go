@@ -2,13 +2,16 @@ package main
 
 import (
 	"fmt"
-	"github.com/IBM/sarama"
 	"log"
 	"os"
 	"os/signal"
+	"time"
+
+	"github.com/IBM/sarama"
 )
 
 func main() {
+	time.Sleep(time.Second * 5)
 	brokers := []string{"kafka:9092"}
 	topics := []string{"users", "trades"}
 
