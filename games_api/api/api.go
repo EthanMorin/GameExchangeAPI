@@ -19,7 +19,7 @@ func (*API) GetTest(c *gin.Context) {
 // PostGames implements ServerInterface.
 func (*API) PostGames(c *gin.Context) {
 	var game models.Game
-	
+
 	if err := c.ShouldBindJSON(&game); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -175,8 +175,6 @@ func (*API) DeleteUsersId(c *gin.Context, id string) {
 	}
 	c.Status(http.StatusNoContent)
 }
-
-
 
 func NewAPI() *API {
 	return &API{}

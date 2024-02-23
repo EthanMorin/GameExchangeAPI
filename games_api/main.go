@@ -24,7 +24,8 @@ func newServer(gameApi *api.API) *gin.Engine {
 }
 
 func main() {
-	err := data.NewDB(); if err != nil {
+	err := data.NewDB()
+	if err != nil {
 		panic(err)
 	}
 	server := newServer(api.NewAPI())
