@@ -3,6 +3,7 @@ package api
 import (
 	"games-api/models"
 	"games-api/services"
+	"games-api/mq"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -13,7 +14,7 @@ type API struct{}
 // GetTest implements ServerInterface.
 // TODO: Remove after testing im both this and games_api.yaml
 func (*API) GetTest(c *gin.Context) {
-	c.JSON(http.StatusOK, "Hello, World!")
+	mq.CreateMessage("User", "test")
 }
 
 // PostGames implements ServerInterface.
