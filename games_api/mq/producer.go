@@ -1,48 +1,28 @@
 package mq
 
 import (
-	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"fmt"
+	"github.com/IBM/sarama"
 )
 
-type KafkaProducer struct {
-	Producer *kafka.Producer
-	topic    string
-}
-
-func NewKafkaProducer(brokers string, topic string) (*KafkaProducer, error) {
-	p, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": brokers})
+func CreateMessage(topic string, content string) {
+	brokerList := []string{"kafka:9092"}
+	producer, err := sarama.NewSyncProducer(brokerList, nil)
 	if err != nil {
-		return nil, err
+		fmt.Println("Producer creation failed", err)
+		return
+	}
+	defer producer.Close()
+
+	message := &sarama.ProducerMessage{
+		Topic: topic,
+		Value: sarama.StringEncoder(content),
 	}
 
-	return &KafkaProducer{
-		Producer: p,
-		topic:    topic,
-	}, nil
-}
-
-func (kp *KafkaProducer) ProduceMessage(key, message string) error {
-	deliveryChan := make(chan kafka.Event)
-	err := kp.Producer.Produce(&kafka.Message{
-		TopicPartition: kafka.TopicPartition{Topic: &kp.topic, Partition: kafka.PartitionAny},
-		Key:            []byte(key),
-		Value:          []byte(message),
-	}, deliveryChan)
+	partition, offset, err := producer.SendMessage(message)
 	if err != nil {
-		return err
+		fmt.Println("Send message failed", err)
+		return
 	}
-
-	e := <-deliveryChan
-	m := e.(*kafka.Message)
-
-	if m.TopicPartition.Error != nil {
-		return m.TopicPartition.Error
-	}
-
-	return nil
+	fmt.Printf("Message is stored in topic(%s)/partition(%d)/offset(%d)\n", message.Topic, partition, offset)
 }
-
-func (kp *KafkaProducer) Close() {
-	kp.Producer.Close()
-}
-
