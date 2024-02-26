@@ -27,8 +27,8 @@ type ServerInterface interface {
 	// (PATCH /exchanges/{id})
 	PatchExchangesId(c *gin.Context, id string)
 	// Create a new exchange
-	// (POST /exchanges/{traderid}/{tradeeid})
-	PostExchangesTraderidTradeeid(c *gin.Context, traderid string, tradeeid string)
+	// (POST /exchanges/{trader_email}/{tradee_email})
+	PostExchangesTraderEmailTradeeEmail(c *gin.Context, traderEmail string, tradeeEmail string)
 	// Returns a list of all games
 	// (GET /games)
 	GetGames(c *gin.Context)
@@ -118,26 +118,26 @@ func (siw *ServerInterfaceWrapper) PatchExchangesId(c *gin.Context) {
 	siw.Handler.PatchExchangesId(c, id)
 }
 
-// PostExchangesTraderidTradeeid operation middleware
-func (siw *ServerInterfaceWrapper) PostExchangesTraderidTradeeid(c *gin.Context) {
+// PostExchangesTraderEmailTradeeEmail operation middleware
+func (siw *ServerInterfaceWrapper) PostExchangesTraderEmailTradeeEmail(c *gin.Context) {
 
 	var err error
 
-	// ------------- Path parameter "traderid" -------------
-	var traderid string
+	// ------------- Path parameter "trader_email" -------------
+	var traderEmail string
 
-	err = runtime.BindStyledParameter("simple", false, "traderid", c.Param("traderid"), &traderid)
+	err = runtime.BindStyledParameter("simple", false, "trader_email", c.Param("trader_email"), &traderEmail)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter traderid: %w", err), http.StatusBadRequest)
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter trader_email: %w", err), http.StatusBadRequest)
 		return
 	}
 
-	// ------------- Path parameter "tradeeid" -------------
-	var tradeeid string
+	// ------------- Path parameter "tradee_email" -------------
+	var tradeeEmail string
 
-	err = runtime.BindStyledParameter("simple", false, "tradeeid", c.Param("tradeeid"), &tradeeid)
+	err = runtime.BindStyledParameter("simple", false, "tradee_email", c.Param("tradee_email"), &tradeeEmail)
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter tradeeid: %w", err), http.StatusBadRequest)
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter tradee_email: %w", err), http.StatusBadRequest)
 		return
 	}
 
@@ -148,7 +148,7 @@ func (siw *ServerInterfaceWrapper) PostExchangesTraderidTradeeid(c *gin.Context)
 		}
 	}
 
-	siw.Handler.PostExchangesTraderidTradeeid(c, traderid, tradeeid)
+	siw.Handler.PostExchangesTraderEmailTradeeEmail(c, traderEmail, tradeeEmail)
 }
 
 // GetGames operation middleware
@@ -376,7 +376,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 
 	router.GET(options.BaseURL+"/exchanges/:id", wrapper.GetExchangesId)
 	router.PATCH(options.BaseURL+"/exchanges/:id", wrapper.PatchExchangesId)
-	router.POST(options.BaseURL+"/exchanges/:traderid/:tradeeid", wrapper.PostExchangesTraderidTradeeid)
+	router.POST(options.BaseURL+"/exchanges/:trader_email/:tradee_email", wrapper.PostExchangesTraderEmailTradeeEmail)
 	router.GET(options.BaseURL+"/games", wrapper.GetGames)
 	router.POST(options.BaseURL+"/games", wrapper.PostGames)
 	router.DELETE(options.BaseURL+"/games/:id", wrapper.DeleteGamesId)
@@ -392,27 +392,27 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
+	"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",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file

@@ -72,8 +72,8 @@ type PatchExchangesIdJSONBody struct {
 // PatchExchangesIdJSONBodyStatus defines parameters for PatchExchangesId.
 type PatchExchangesIdJSONBodyStatus string
 
-// PostExchangesTraderidTradeeidJSONBody defines parameters for PostExchangesTraderidTradeeid.
-type PostExchangesTraderidTradeeidJSONBody struct {
+// PostExchangesTraderEmailTradeeEmailJSONBody defines parameters for PostExchangesTraderEmailTradeeEmail.
+type PostExchangesTraderEmailTradeeEmailJSONBody struct {
 	Gameid *string `json:"gameid,omitempty"`
 }
 
@@ -92,8 +92,8 @@ type PatchUsersIdJSONBody struct {
 // PatchExchangesIdJSONRequestBody defines body for PatchExchangesId for application/json ContentType.
 type PatchExchangesIdJSONRequestBody PatchExchangesIdJSONBody
 
-// PostExchangesTraderidTradeeidJSONRequestBody defines body for PostExchangesTraderidTradeeid for application/json ContentType.
-type PostExchangesTraderidTradeeidJSONRequestBody PostExchangesTraderidTradeeidJSONBody
+// PostExchangesTraderEmailTradeeEmailJSONRequestBody defines body for PostExchangesTraderEmailTradeeEmail for application/json ContentType.
+type PostExchangesTraderEmailTradeeEmailJSONRequestBody PostExchangesTraderEmailTradeeEmailJSONBody
 
 // PostGamesJSONRequestBody defines body for PostGames for application/json ContentType.
 type PostGamesJSONRequestBody = Game

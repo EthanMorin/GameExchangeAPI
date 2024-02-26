@@ -125,23 +125,11 @@ func DeleteGame(objId string) error {
 }
 
 // Exchange
-// TODO: add logic to check if traderid, tradeeid, and gameid are valid and if the trader has the game
-func PostExchange(traderId string, tradeeId string, exchange *models.Exchange) (*mongo.InsertOneResult, error){
-	if exchange.Gameid == nil {
-		return nil, errors.New("All fields are required")
-	}
-	traderObjId, err := primitive.ObjectIDFromHex(traderId)
-	if err != nil {
-		return nil, errors.New("Invalid traderid")
-	}
-	tradeeObjId, err := primitive.ObjectIDFromHex(tradeeId)
-	if err != nil {
-		return nil, errors.New("Invalid tradeeid")
-	}
+func PostExchange(traderEmail string, tradeeEmail string, exchange *models.Exchange) (*mongo.InsertOneResult, error){
 	status := models.ExchangeStatusPending
-	exchange.Tradeeid = &tradeeObjId
-	exchange.Traderid = &traderObjId
 	exchange.Status = &status
+	exchange.TradeeEmail = &tradeeEmail
+	exchange.TraderEmail = &traderEmail
 	result, err := data.PostExchange(exchange)
 	if err != nil {
 		return nil, errors.New("Couldnt post exchange")

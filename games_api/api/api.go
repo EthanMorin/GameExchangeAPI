@@ -2,8 +2,8 @@ package api
 
 import (
 	"games-api/models"
-	"games-api/services"
 	"games-api/mq"
+	"games-api/services"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -42,14 +42,13 @@ func (*API) PostUsers(c *gin.Context) {
 	c.JSON(http.StatusCreated, result)
 }
 
-// PostExchangeTraderidTradeeid implements ServerInterface.
-func (*API) PostExchangesTraderidTradeeid(c *gin.Context, traderid string, tradeeid string) {
+// PostExchangesTraderEmailTradeeEmail implements ServerInterface.
+func (a *API) PostExchangesTraderEmailTradeeEmail(c *gin.Context, traderEmail string, tradeeEmail string) {
 	var exchange models.Exchange
 	if err := c.ShouldBindJSON(&exchange); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
 	}
-	result, err := services.PostExchange(traderid, tradeeid, &exchange)
+	result, err := services.PostExchange(traderEmail, tradeeEmail, &exchange)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

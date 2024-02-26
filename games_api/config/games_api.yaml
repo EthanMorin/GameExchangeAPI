@@ -229,20 +229,20 @@ paths:
           description: User removed successfully.
         "404":
           description: User not found.
-  /exchanges/{traderid}/{tradeeid}:
+  /exchanges/{trader_email}/{tradee_email}:
     post:
       tags:
         - exchange
       summary: Create a new exchange
       parameters:
         - in: path
-          name: traderid
+          name: trader_email
           required: true
           schema:
             type: string
           description: The trader ID.
         - in: path
-          name: tradeeid
+          name: tradee_email
           required: true
           schema:
             type: string
