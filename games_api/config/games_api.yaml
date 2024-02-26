@@ -12,6 +12,9 @@ tags:
   - name: exchange
     description: Contains a list of exchanges, and actions to that list.
 paths:
+  # /test:
+  #   get:
+  #     summary: Test tin
   /games:
     get:
       tags:
