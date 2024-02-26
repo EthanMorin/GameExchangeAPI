@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"games-email/data"
 	"games-email/models"
 	"games-email/services"
 	"log"
@@ -22,11 +21,11 @@ func (h groupHandler) ConsumeClaim(sess sarama.ConsumerGroupSession, claim saram
 	for msg := range claim.Messages() {
 		switch msg.Topic {
 		case "user":
-			var user models.UserIdEmail
+			var user models.UserEmail
 			_ = json.Unmarshal(msg.Value, &user)
 			services.SendUserEmail(string(msg.Topic), &user)
 		case "exchange":
-			var exchange models.EchangeIds
+			var exchange models.EchangeEmails
 			_ = json.Unmarshal(msg.Value, &exchange)
 			services.SendExchangeEmail(string(msg.Key), &exchange)
 		}
@@ -38,10 +37,6 @@ func (h groupHandler) ConsumeClaim(sess sarama.ConsumerGroupSession, claim saram
 func main() {
 	brokers := []string{"kafka:9092"}
 	topics := []string{"user", "exchange"}
-	err := data.NewDB()
-	if err != nil {
-		log.Fatalf("Couldnt establish connection to DB: {%s}", err)
-	}
 
 	config := sarama.NewConfig()
 	config.Consumer.Return.Errors = true

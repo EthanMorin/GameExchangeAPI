@@ -5,23 +5,18 @@ package services
 // Pass: 2g8QsnyNdt2zhChpQ8
 
 import (
-	"games-email/data"
 	"games-email/models"
 	"log"
 
 	"github.com/wneessen/go-mail"
 )
 
-func SendUserEmail(topic string, user *models.UserIdEmail) {
+func SendUserEmail(topic string, user *models.UserEmail) {
 	message := mail.NewMsg()
 	if err := message.From("kurt.heaney@ethereal.email"); err != nil {
 		log.Fatalf("Failed to set sender: {%s}", err)
 	}
-	email, err := data.GetUserEmail(*user.Id)
-	if err != nil {
-		log.Fatalf("Failed to get user email: {%s}", err)
-	}
-	if err := message.To(email); err != nil {
+	if err := message.To(*user.Email); err != nil {
 		log.Fatalf("Failed to set recipient: {%s}", err)
 	}
 
