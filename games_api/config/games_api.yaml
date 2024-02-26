@@ -371,10 +371,6 @@ components:
           type: string
         street_address:
           type: string
-        games:
-          type: array
-          items:
-            $ref: "#/components/schemas/Game"
     Exchange:
       type: object
       properties:

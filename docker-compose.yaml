@@ -95,15 +95,15 @@ services:
     networks:
       - exchange
   # Promethius: https://hub.docker.com/r/bitnami/prometheus
-  prometheus:
-    build: ./games_prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - pro_data:/etc/prometheus_data
-    restart: on-failure
-    networks:
-      - exchange
+  # prometheus:
+  #   build: ./games_prometheus
+  #   ports:
+  #     - "9090:9090"
+  #   volumes:
+  #     - pro_data:/etc/prometheus_data
+  #   restart: on-failure
+  #   networks:
+  #     - exchange
 volumes:
   db_data: {}
   kafka_data: {}

@@ -57,7 +57,6 @@ type GameCondition string
 // User defines model for User.
 type User struct {
 	Email         *string             `json:"email,omitempty"`
-	Games         *[]Game             `json:"games,omitempty"`
 	Id            *primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
 	Password      *string             `json:"password,omitempty"`
 	StreetAddress *string             `json:"street_address,omitempty"`
