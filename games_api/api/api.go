@@ -11,12 +11,6 @@ import (
 
 type API struct{}
 
-// GetTest implements ServerInterface.
-// TODO: Remove after testing im both this and games_api.yaml
-func (*API) GetTest(c *gin.Context) {
-	mq.CreateMessage("User", "test")
-}
-
 // PostGames implements ServerInterface.
 func (*API) PostGames(c *gin.Context) {
 	var game models.Game
@@ -139,6 +133,7 @@ func (*API) PatchUsersId(c *gin.Context, id string) {
 	}
 	services.PatchUser(id, &updatedUser)
 	c.JSON(http.StatusOK, updatedUser)
+	mq.UpdateUserPass(&updatedUser)
 }
 
 // PatchExchangeId implements ServerInterface.

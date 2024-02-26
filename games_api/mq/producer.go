@@ -1,28 +1,26 @@
 package mq
 
 import (
-	"fmt"
+	"encoding/json"
+	"games-api/models"
+	"log"
+
 	"github.com/IBM/sarama"
 )
 
-func CreateMessage(topic string, content string) {
-	brokerList := []string{"kafka:9092"}
-	producer, err := sarama.NewSyncProducer(brokerList, nil)
+func UpdateUserPass(user *models.User){
+	producer, err := sarama.NewSyncProducer([]string{"kafka9092"}, nil)
 	if err != nil {
-		fmt.Println("Producer creation failed", err)
-		return
-	}
-	defer producer.Close()
-
-	message := &sarama.ProducerMessage{
-		Topic: topic,
-		Value: sarama.StringEncoder(content),
+		log.Fatalf("Failed to create producer: %s", err)
 	}
 
-	partition, offset, err := producer.SendMessage(message)
-	if err != nil {
-		fmt.Println("Send message failed", err)
-		return
+	userJson, _ := json.Marshal(user)
+	msg := &sarama.ProducerMessage{
+		Topic: "user",
+		Key: sarama.StringEncoder("password_update"),
+		Value: sarama.StringEncoder(userJson),
 	}
-	fmt.Printf("Message is stored in topic(%s)/partition(%d)/offset(%d)\n", message.Topic, partition, offset)
+
+	producer.SendMessage(msg)
 }
+

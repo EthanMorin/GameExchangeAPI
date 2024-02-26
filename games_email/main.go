@@ -1,61 +1,70 @@
 package main
 
-import "games-email/services"
+import (
+	"context"
+	"encoding/json"
+	"games-email/services"
+	"log"
+	"os"
+	"os/signal"
+	"sync"
 
-// "fmt"
-// "log"
-// "os"
-// "os/signal"
-// "time"
+	"github.com/IBM/sarama"
+) 	
 
-// "github.com/IBM/sarama"
+	type groupHandler struct{}
 
-// func main() {
-// time.Sleep(time.Second * 5)
-// brokers := []string{"kafka:9092"}
-// topics := []string{"users", "trades"}
+	func (groupHandler) Setup(_ sarama.ConsumerGroupSession) error   { return nil }
+	func (groupHandler) Cleanup(_ sarama.ConsumerGroupSession) error { return nil }
+	func (h groupHandler) ConsumeClaim(sess sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
+			for msg := range claim.Messages() {
+					switch msg.Topic {
+					case "user":
+							// var user models.User
+							// _ = json.Unmarshal(msg.Value, &user)
+							// services.SendEmail(*user.Email, "Password Update", "Your password has been updated.")
+					case "exchange":
+							// var exchange models.Exchange
+							// _ = json.Unmarshal(msg.Value, &exchange)
+							// services.SendEmail(*exchange.Tradee.Email, "Offer " + *exchange.Status, "Your offer has been " + *exchange.Status)
+							// handleOffer(string(msg.Key), exchange)
+					}
+					sess.MarkMessage(msg, "")
+			}
+			return nil
+	}
 
-// config := sarama.NewConfig()
-// config.Consumer.Return.Errors = true
+	func main() {
+			brokers := []string{"kafka:9092"}
+			topics := []string{"user", "exchange"}
+	
+			config := sarama.NewConfig()
+			config.Consumer.Return.Errors = true
+	
+			group, err := sarama.NewConsumerGroup(brokers, "example-group", config)
+			if err != nil {
+					log.Panicf("Error creating consumer group: %v", err)
+			}
+			defer func() { _ = group.Close() }()
+	
+			ctx, cancel := context.WithCancel(context.Background())
+			wg := &sync.WaitGroup{}
+			wg.Add(1)
+			go func() {
+					defer wg.Done()
+					for {
+							if err := group.Consume(ctx, topics, groupHandler{}); err != nil {
+									panic(err)
+							}
+					}
+			}()
+	
+			sigterm := make(chan os.Signal, 1)
+			signal.Notify(sigterm, os.Interrupt)
+			<-sigterm
+	
+			cancel()
+			wg.Wait()
+	}
 
-// consumer, err := sarama.NewConsumer(brokers, config)
-// if err != nil {
-// 	log.Panicf("Error creating consumer: %v", err)
-// }
-// defer consumer.Close()
 
-// messages := make(chan *sarama.ConsumerMessage)
-
-// for _, topic := range topics {
-// 	partitions, err := consumer.Partitions(topic)
-// 	if err != nil {
-// 		log.Panicf("Error getting partitions for topic %s: %v", topic, err)
-// 	}
-
-// 	for _, partition := range partitions {
-// 		pc, err := consumer.ConsumePartition(topic, partition, sarama.OffsetNewest)
-// 		if err != nil {
-// 			log.Panicf("Error consuming partition %d of topic %s: %v", partition, topic, err)
-// 		}
-// 		go func(pc sarama.PartitionConsumer) {
-// 			for msg := range pc.Messages() {
-// 				messages <- msg
-// 			}
-// 		}(pc)
-// 	}
-// }
-
-// go func() {
-// 	for msg := range messages {
-// 		fmt.Printf("Received message: topic=%s, partition=%d, offset=%d, value=%s\n", msg.Topic, msg.Partition, msg.Offset, string(msg.Value))
-// 	}
-// }()
-
-// sigterm := make(chan os.Signal, 1)
-// signal.Notify(sigterm, os.Interrupt)
-// <-sigterm
-// }
-
-func main() {
-	services.SendEmail("Ethanmorin2004@gmail.com", "Test", "Test")
-}

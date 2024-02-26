@@ -35,7 +35,7 @@ type Exchange struct {
 	Id       *primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
 	Status   *ExchangeStatus     `json:"status,omitempty"`
 	Tradeeid *primitive.ObjectID `bson:"tradeeid,omitempty" json:"tradeeid,omitempty"`
-	Traderid *primitive.ObjectID `bson:"traderid,omitempty" json:"traderid,omitempty"`
+	Traderid *primitive.ObjectID `bson:"tradeeid,omitempty" json:"traderid,omitempty"`
 }
 
 // ExchangeStatus defines model for Exchange.Status.

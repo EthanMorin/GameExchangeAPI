@@ -398,7 +398,7 @@ components:
           x-go-type-import:
             path: go.mongodb.org/mongo-driver/bson/primitive
           x-oapi-codegen-extra-tags:
-            bson: traderid,omitempty
+            bson: tradeeid,omitempty
         tradeeid:
           type: string
           x-go-type: primitive.ObjectID
