@@ -3,6 +3,7 @@ package services
 import (
 	"games-api/data"
 	"games-api/models"
+	"games-api/mq"
 
 	"github.com/go-errors/errors"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -52,6 +53,7 @@ func PatchUser(objId string, user *models.User) (*mongo.UpdateResult, error){
 	if err != nil {
 		return nil, errors.New("Couldnt patch user")
 	}
+	mq.UpdateUserPass(user)
 	return result, nil
 }
 
@@ -134,6 +136,7 @@ func PostExchange(traderEmail string, tradeeEmail string, exchange *models.Excha
 	if err != nil {
 		return nil, errors.New("Couldnt post exchange")
 	}
+	mq.CreateExchange(exchange)
 	return result, nil
 }
 
@@ -158,6 +161,13 @@ func PatchExchangesId(objId string, exchangeStatus *models.ExchangeStatus) (*mon
 	result, err := data.PatchExchange(exchangeObjId, exchangeStatus)
 	if err != nil {
 		return nil, errors.New("Couldnt patch exchange")
+	}
+	exchange, _ := GetExchange(exchangeObjId.Hex())
+	switch string(*exchangeStatus) {
+	case "accepted":
+		mq.UpdateExchangeAccepted(exchange)
+	case "declined":
+		mq.UpdateExchangeRejected(exchange)
 	}
 	return result, nil
 }
