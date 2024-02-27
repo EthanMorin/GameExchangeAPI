@@ -2,7 +2,6 @@ package api
 
 import (
 	"games-api/models"
-	"games-api/mq"
 	"games-api/services"
 	"net/http"
 
@@ -127,12 +126,12 @@ func (*API) PatchUsersId(c *gin.Context, id string) {
 	var updatedUser models.User
 	err := c.ShouldBindJSON(&updatedUser)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"Binding error": err.Error()})
 		return
 	}
 	services.PatchUser(id, &updatedUser)
-	c.JSON(http.StatusOK, updatedUser)
-	mq.UpdateUserPass(&updatedUser)
+	c.JSON(http.StatusOK, &updatedUser)
+	// mq.UpdateUserPass(&updatedUser)
 }
 
 // PatchExchangeId implements ServerInterface.

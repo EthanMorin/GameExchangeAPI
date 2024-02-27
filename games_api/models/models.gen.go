@@ -31,7 +31,7 @@ const (
 
 // Exchange defines model for Exchange.
 type Exchange struct {
-	Game        *Game               `json:"game,omitempty"`
+	Gameid      *primitive.ObjectID `bson:"_id,omitempty" json:"gameid,omitempty"`
 	Id          *primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
 	Status      *ExchangeStatus     `json:"status,omitempty"`
 	TradeeEmail *string             `json:"tradee_email,omitempty"`
@@ -85,7 +85,6 @@ type PatchGamesIdJSONBody struct {
 // PatchUsersIdJSONBody defines parameters for PatchUsersId.
 type PatchUsersIdJSONBody struct {
 	Password *string `json:"password,omitempty"`
-	Username *string `json:"username,omitempty"`
 }
 
 // PatchExchangesIdJSONRequestBody defines body for PatchExchangesId for application/json ContentType.

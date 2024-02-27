@@ -3,14 +3,21 @@ package mq
 import (
 	"encoding/json"
 	"games-api/models"
+	"log"
 
 	"github.com/IBM/sarama"
 )
 
-var producer, _ = sarama.NewSyncProducer([]string{"kafka9092"}, nil)
 
 func UpdateUserPass(user *models.User) {
-	userJson, _ := json.Marshal(user)
+	producer, err := sarama.NewSyncProducer([]string{"kafka:9092"}, nil)
+	if err != nil {
+		log.Fatalf("couldnt create producer: {%s}", err)
+	}
+	userJson, err := json.Marshal(user)
+	if err != nil {
+		log.Fatalf("couldnt Marshal json: {%s}", err)
+	}
 	msg := &sarama.ProducerMessage{
 		Topic: "user",
 		Key:   sarama.StringEncoder("password_update"),
@@ -20,9 +27,16 @@ func UpdateUserPass(user *models.User) {
 }
 
 func CreateExchange(exchange *models.Exchange) {
-	exchangeJson, _ := json.Marshal(exchange)
+	producer, err := sarama.NewSyncProducer([]string{"kafka:9092"}, nil)
+	if err != nil {
+		log.Fatalf("couldnt create producer: {%s}", err)
+	}
+	exchangeJson, err := json.Marshal(exchange)
+	if err != nil {
+		log.Fatalf("couldnt Marshal json: {%s}", err)
+	}
 	msg := &sarama.ProducerMessage{
-		Topic: "user",
+		Topic: "exchange",
 		Key:   sarama.StringEncoder("exchange_created"),
 		Value: sarama.StringEncoder(exchangeJson),
 	}
@@ -30,9 +44,16 @@ func CreateExchange(exchange *models.Exchange) {
 }
 
 func UpdateExchangeAccepted(exchange *models.Exchange) {
-	exchangeJson, _ := json.Marshal(exchange)
+	producer, err := sarama.NewSyncProducer([]string{"kafka:9092"}, nil)
+	if err != nil {
+		log.Fatalf("couldnt create producer: {%s}", err)
+	}
+	exchangeJson, err := json.Marshal(exchange)
+	if err != nil {
+		log.Fatalf("couldnt Marshal json: {%s}", err)
+	}
 	msg := &sarama.ProducerMessage{
-		Topic: "user",
+		Topic: "exchange",
 		Key:   sarama.StringEncoder("exchange_accepted"),
 		Value: sarama.StringEncoder(exchangeJson),
 	}
@@ -40,9 +61,16 @@ func UpdateExchangeAccepted(exchange *models.Exchange) {
 }
 
 func UpdateExchangeRejected(exchange *models.Exchange) {
-	exchangeJson, _ := json.Marshal(exchange)
+	producer, err := sarama.NewSyncProducer([]string{"kafka:9092"}, nil)
+	if err != nil {
+		log.Fatalf("couldnt create producer: {%s}", err)
+	}
+	exchangeJson, err := json.Marshal(exchange)
+	if err != nil {
+		log.Fatalf("couldnt Marshal json: {%s}", err)
+	}
 	msg := &sarama.ProducerMessage{
-		Topic: "user",
+		Topic: "exchange",
 		Key:   sarama.StringEncoder("exchange_rejected"),
 		Value: sarama.StringEncoder(exchangeJson),
 	}

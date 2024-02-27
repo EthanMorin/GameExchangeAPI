@@ -21,6 +21,11 @@
 **/obj
 **/secrets.dev.yaml
 **/values.dev.yaml
+**/vendor
+**/*.swp
+*.log
+*.test
+*.exe
 makefile
 LICENSE
 README.md

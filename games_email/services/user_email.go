@@ -11,12 +11,15 @@ import (
 	"github.com/wneessen/go-mail"
 )
 
-func SendUserEmail(topic string, user *models.UserEmail) {
+func SendUserEmail(user *models.UserEmail) {
 	message := mail.NewMsg()
 	if err := message.From("kurt.heaney@ethereal.email"); err != nil {
 		log.Fatalf("Failed to set sender: {%s}", err)
 	}
-	if err := message.To(*user.Email); err != nil {
+	
+	// Why does this work when i type it out but not pull from the model?
+	if err := message.To("kurt.heaney@ethereal.email"); err != nil {
+		// if err := message.To(*user.Email); err != nil {
 		log.Fatalf("Failed to set recipient: {%s}", err)
 	}
 

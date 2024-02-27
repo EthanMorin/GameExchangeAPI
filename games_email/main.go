@@ -18,51 +18,51 @@ type groupHandler struct{}
 func (groupHandler) Setup(_ sarama.ConsumerGroupSession) error   { return nil }
 func (groupHandler) Cleanup(_ sarama.ConsumerGroupSession) error { return nil }
 func (h groupHandler) ConsumeClaim(sess sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
-	for msg := range claim.Messages() {
-		switch msg.Topic {
-		case "user":
-			var user models.UserEmail
-			_ = json.Unmarshal(msg.Value, &user)
-			services.SendUserEmail(string(msg.Topic), &user)
-		case "exchange":
-			var exchange models.EchangeEmails
-			_ = json.Unmarshal(msg.Value, &exchange)
-			services.SendExchangeEmail(string(msg.Key), &exchange)
-		}
-		sess.MarkMessage(msg, "")
-	}
-	return nil
+    for msg := range claim.Messages() {
+        switch msg.Topic {
+        case "user":
+            var user models.UserEmail
+            _ = json.Unmarshal(msg.Value, &user)
+            services.SendUserEmail(&user)
+        case "exchange":
+            var offer models.EchangeEmails
+            _ = json.Unmarshal(msg.Value, &offer)
+            services.SendExchangeEmail(string(msg.Key), &offer)
+        }
+        sess.MarkMessage(msg, "")
+    }
+    return nil
 }
 
 func main() {
-	brokers := []string{"kafka:9092"}
-	topics := []string{"user", "exchange"}
+    brokers := []string{"kafka:9092"}
+    topics := []string{"user", "exchange"}
 
-	config := sarama.NewConfig()
-	config.Consumer.Return.Errors = true
+    config := sarama.NewConfig()
+    config.Consumer.Return.Errors = true
 
-	group, err := sarama.NewConsumerGroup(brokers, "example-group", config)
-	if err != nil {
-		log.Panicf("Error creating consumer group: %v", err)
-	}
-	defer func() { _ = group.Close() }()
+    group, err := sarama.NewConsumerGroup(brokers, "email-group", config)
+    if err != nil {
+        log.Panicf("Error creating consumer group: %v", err)
+    }
+    defer func() { _ = group.Close() }()
 
-	ctx, cancel := context.WithCancel(context.Background())
-	wg := &sync.WaitGroup{}
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-		for {
-			if err := group.Consume(ctx, topics, groupHandler{}); err != nil {
-				panic(err)
-			}
-		}
-	}()
+    ctx, cancel := context.WithCancel(context.Background())
+    wg := &sync.WaitGroup{}
+    wg.Add(1)
+    go func() {
+        defer wg.Done()
+        for {
+            if err := group.Consume(ctx, topics, groupHandler{}); err != nil {
+                panic(err)
+            }
+        }
+    }()
 
-	sigterm := make(chan os.Signal, 1)
-	signal.Notify(sigterm, os.Interrupt)
-	<-sigterm
+    sigterm := make(chan os.Signal, 1)
+    signal.Notify(sigterm, os.Interrupt)
+    <-sigterm
 
-	cancel()
-	wg.Wait()
+    cancel()
+    wg.Wait()
 }
