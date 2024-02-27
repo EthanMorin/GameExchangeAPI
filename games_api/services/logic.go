@@ -43,7 +43,6 @@ func GetUser(objId string) (*models.User, error) {
 	return user, nil
 }
 
-// TODO: TEST THIS
 func PatchUser(objId string, user *models.User) (*mongo.UpdateResult, error){
 	userObjId, err := primitive.ObjectIDFromHex(objId)
 	if err != nil {
@@ -112,6 +111,7 @@ func PatchGame(objId string, game *models.Game) (*mongo.UpdateResult, error){
 		return nil, errors.New("Couldnt patch game")
 	}
 	return result, nil
+
 }
 
 func DeleteGame(objId string) error {
@@ -170,4 +170,16 @@ func PatchExchangesId(objId string, exchangeStatus *models.ExchangeStatus) (*mon
 		mq.UpdateExchangeRejected(exchange)
 	}
 	return result, nil
+}
+
+func DeleteExchange(objId string) error {
+	exchangeObjId, err := primitive.ObjectIDFromHex(objId)
+	if err != nil {
+		return errors.New("Invalid object id")
+	}
+	err = data.DeleteExchange(exchangeObjId)
+	if err != nil {
+		return errors.New("Couldnt delete game")
+	}
+	return nil
 }

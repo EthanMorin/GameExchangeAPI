@@ -153,6 +153,15 @@ func PatchExchange(objId primitive.ObjectID, exchangeStatus *models.ExchangeStat
 	return result, nil
 }
 
+func DeleteExchange(objId primitive.ObjectID) error {
+	_, err := exchangeCollection().DeleteOne(context.Background(), bson.M{"_id": objId})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+
 // Helper functions
 func GetObjectID(id string) (primitive.ObjectID, error) {
 	objId, err := primitive.ObjectIDFromHex(id)

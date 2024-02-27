@@ -16,10 +16,10 @@ const (
 
 // Defines values for GameCondition.
 const (
-	Fair GameCondition = "fair"
-	Good GameCondition = "good"
-	Mint GameCondition = "mint"
-	Poor GameCondition = "poor"
+	GameConditionFair GameCondition = "fair"
+	GameConditionGood GameCondition = "good"
+	GameConditionMint GameCondition = "mint"
+	GameConditionPoor GameCondition = "poor"
 )
 
 // Defines values for PatchExchangesIdJSONBodyStatus.
@@ -27,6 +27,14 @@ const (
 	PatchExchangesIdJSONBodyStatusAccepted PatchExchangesIdJSONBodyStatus = "accepted"
 	PatchExchangesIdJSONBodyStatusDeclined PatchExchangesIdJSONBodyStatus = "declined"
 	PatchExchangesIdJSONBodyStatusPending  PatchExchangesIdJSONBodyStatus = "pending"
+)
+
+// Defines values for PatchGamesIdJSONBodyStatus.
+const (
+	PatchGamesIdJSONBodyStatusFair PatchGamesIdJSONBodyStatus = "fair"
+	PatchGamesIdJSONBodyStatusGood PatchGamesIdJSONBodyStatus = "good"
+	PatchGamesIdJSONBodyStatusMint PatchGamesIdJSONBodyStatus = "mint"
+	PatchGamesIdJSONBodyStatusPoor PatchGamesIdJSONBodyStatus = "poor"
 )
 
 // Exchange defines model for Exchange.
@@ -78,9 +86,11 @@ type PostExchangesTraderEmailTradeeEmailJSONBody struct {
 
 // PatchGamesIdJSONBody defines parameters for PatchGamesId.
 type PatchGamesIdJSONBody struct {
-	Description *string `json:"description,omitempty"`
-	Name        *string `json:"name,omitempty"`
+	Status *PatchGamesIdJSONBodyStatus `json:"status,omitempty"`
 }
+
+// PatchGamesIdJSONBodyStatus defines parameters for PatchGamesId.
+type PatchGamesIdJSONBodyStatus string
 
 // PatchUsersIdJSONBody defines parameters for PatchUsersId.
 type PatchUsersIdJSONBody struct {

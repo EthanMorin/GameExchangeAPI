@@ -170,6 +170,16 @@ func (*API) DeleteUsersId(c *gin.Context, id string) {
 	c.Status(http.StatusNoContent)
 }
 
+// DeleteExchangesId implements ServerInterface.
+func (a *API) DeleteExchangesId(c *gin.Context, id string) {
+	err := services.DeleteExchange(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.Status(http.StatusNoContent)
+}
+
 func NewAPI() *API {
 	return &API{}
 }

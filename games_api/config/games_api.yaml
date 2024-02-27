@@ -93,10 +93,13 @@ paths:
             schema:
               type: object
               properties:
-                name:
+                status:
                   type: string
-                description:
-                  type: string
+                  enum:
+                    - fair
+                    - good
+                    - mint
+                    - poor
       responses:
         "200":
           description: Game updated successfully.
@@ -317,6 +320,22 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Exchange"
+        "404":
+          description: Exchange not found.
+    delete:
+      tags:
+        - exchange
+      summary: Removes an exchange.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The exchange ID.
+      responses:
+        "204":
+          description: Exchange removed successfully.
         "404":
           description: Exchange not found.
 components:
