@@ -11,6 +11,7 @@ import (
 	"github.com/wneessen/go-mail"
 )
 
+// TODO: change emails to dynamic ones once fiture out fix
 func SendUserEmail(user *models.UserEmail) {
 	message := mail.NewMsg()
 	if err := message.From("kurt.heaney@ethereal.email"); err != nil {

@@ -11,13 +11,15 @@ import (
 	"github.com/wneessen/go-mail"
 )
 
+// TODO: change emails to dynamic ones once fiture out fix
 func SendExchangeEmail(topic string, exchange *models.EchangeEmails) {
 	message := mail.NewMsg()
 	switch topic {
 	case "exchange_created":
 		message.Subject("Offer Created")
 		message.SetBodyString(mail.TypeTextPlain, "You have a pending offer")
-		if err := message.To(*exchange.TraderEmail); err != nil {
+		// if err := message.To(*exchange.TraderEmail); err != nil {
+		if err := message.To("kurt.heaney@ethereal.email"); err != nil {
 			log.Fatalf("Failed to set recipient: {%s}", err)
 		}
 		sendEmail(message)
@@ -32,7 +34,8 @@ func SendExchangeEmail(topic string, exchange *models.EchangeEmails) {
 	if err := message.From("kurt.heaney@ethereal.email"); err != nil {
 		log.Fatalf("Failed to set sender: {%s}", err)
 	}
-	if err := message.To(*exchange.TradeeEmail); err != nil {
+	// if err := message.To(*exchange.TradeeEmail); err != nil {
+	if err := message.To("kurt.heaney@ethereal.email"); err != nil {
 		log.Fatalf("Failed to set recipient: {%s}", err)
 	}
 	sendEmail(message)
