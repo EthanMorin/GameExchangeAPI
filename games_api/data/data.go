@@ -128,7 +128,6 @@ func DeleteUser(objId primitive.ObjectID) error {
 }
 
 // Exchanges
-// TODO: add more logic to check if users exist and own game
 func PostExchange(exchange *models.Exchange) (*mongo.InsertOneResult, error) {
 	result, err := exchangeCollection().InsertOne(context.Background(), &exchange)
 	if err != nil {

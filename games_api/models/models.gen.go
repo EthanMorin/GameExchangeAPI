@@ -39,7 +39,7 @@ const (
 
 // Exchange defines model for Exchange.
 type Exchange struct {
-	Gameid      *primitive.ObjectID `bson:"_id,omitempty" json:"gameid,omitempty"`
+	Gameid      *primitive.ObjectID `bson:"game_id,omitempty" json:"gameid,omitempty"`
 	Id          *primitive.ObjectID `bson:"_id,omitempty" json:"id,omitempty"`
 	Status      *ExchangeStatus     `json:"status,omitempty"`
 	TradeeEmail *string             `json:"tradee_email,omitempty"`

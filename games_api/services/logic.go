@@ -134,7 +134,7 @@ func PostExchange(traderEmail string, tradeeEmail string, exchange *models.Excha
 	exchange.TraderEmail = &traderEmail
 	result, err := data.PostExchange(exchange)
 	if err != nil {
-		return nil, errors.New("Couldnt post exchange")
+		return nil, err
 	}
 	mq.CreateExchange(exchange)
 	return result, nil

@@ -404,7 +404,7 @@ components:
           x-go-type-import:
             path: go.mongodb.org/mongo-driver/bson/primitive
           x-oapi-codegen-extra-tags:
-            bson: _id,omitempty
+            bson: game_id,omitempty
         trader_email:
           type: string
         tradee_email:
