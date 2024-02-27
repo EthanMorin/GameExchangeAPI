@@ -25,21 +25,21 @@ func NewDB() error {
 	return nil
 }
 
-func UserCollection() *mongo.Collection {
+func userCollection() *mongo.Collection {
 	return client.Database("Games").Collection("users")
 }
 
-func GameCollection() *mongo.Collection {
+func gameCollection() *mongo.Collection {
 	return client.Database("Games").Collection("games")
 }
 
-func ExchangeCollection() *mongo.Collection {
+func exchangeCollection() *mongo.Collection {
 	return client.Database("Games").Collection("exchanges")
 }
 
 // Games
 func PostGame(game *models.Game) (*mongo.InsertOneResult, error) {
-	result, err := GameCollection().InsertOne(context.Background(), &game)
+	result, err := gameCollection().InsertOne(context.Background(), &game)
 	if err != nil {
 		return nil, err
 	}
@@ -48,7 +48,7 @@ func PostGame(game *models.Game) (*mongo.InsertOneResult, error) {
 
 func GetGames() (*[]models.Game, error) {
 	var games []models.Game
-	curser, err := GameCollection().Find(context.Background(), bson.M{})
+	curser, err := gameCollection().Find(context.Background(), bson.M{})
 	if err != nil {
 		return nil, err
 	}
@@ -60,14 +60,14 @@ func GetGames() (*[]models.Game, error) {
 
 func GetGame(objId primitive.ObjectID) (*models.Game, error) {
 	var game models.Game
-	if err := GameCollection().FindOne(context.Background(), bson.M{"_id": objId}).Decode(&game); err != nil {
+	if err := gameCollection().FindOne(context.Background(), bson.M{"_id": objId}).Decode(&game); err != nil {
 		return nil, err
 	}
 	return &game, nil
 }
 
 func PatchGame(objId primitive.ObjectID, game *models.Game) (*mongo.UpdateResult, error) {
-	result, err := GameCollection().UpdateOne(context.Background(), bson.M{"_id": objId}, bson.M{"$set": bson.M{"condition": &game.Condition}})
+	result, err := gameCollection().UpdateOne(context.Background(), bson.M{"_id": objId}, bson.M{"$set": bson.M{"condition": &game.Condition}})
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +75,7 @@ func PatchGame(objId primitive.ObjectID, game *models.Game) (*mongo.UpdateResult
 }
 
 func DeleteGame(objId primitive.ObjectID) error {
-	_, err := GameCollection().DeleteOne(context.Background(), bson.M{"_id": objId})
+	_, err := gameCollection().DeleteOne(context.Background(), bson.M{"_id": objId})
 	if err != nil {
 		return err
 	}
@@ -84,7 +84,7 @@ func DeleteGame(objId primitive.ObjectID) error {
 
 // Users
 func PostUser(user *models.User) (*mongo.InsertOneResult, error) {
-	result, err := UserCollection().InsertOne(context.Background(), &user)
+	result, err := userCollection().InsertOne(context.Background(), &user)
 	if err != nil {
 		return nil, err
 	}
@@ -93,7 +93,7 @@ func PostUser(user *models.User) (*mongo.InsertOneResult, error) {
 
 func GetUsers() (*[]models.User, error) {
 	var users []models.User
-	curser, err := UserCollection().Find(context.Background(), bson.M{})
+	curser, err := userCollection().Find(context.Background(), bson.M{})
 	if err != nil {
 		return nil, err
 	}
@@ -105,14 +105,14 @@ func GetUsers() (*[]models.User, error) {
 
 func GetUser(objId primitive.ObjectID) (*models.User, error) {
 	var user models.User
-	if err := UserCollection().FindOne(context.Background(), bson.M{"_id": objId}).Decode(&user); err != nil {
+	if err := userCollection().FindOne(context.Background(), bson.M{"_id": objId}).Decode(&user); err != nil {
 		return nil, err
 	}
 	return &user, nil
 }
 
 func PatchUser(objId primitive.ObjectID, user *models.User) (*mongo.UpdateResult, error) {
-	result, err := UserCollection().UpdateOne(context.Background(), bson.M{"_id": objId}, bson.M{"$set": bson.M{"password": &user.Password}})
+	result, err := userCollection().UpdateOne(context.Background(), bson.M{"_id": objId}, bson.M{"$set": bson.M{"password": &user.Password}})
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +120,7 @@ func PatchUser(objId primitive.ObjectID, user *models.User) (*mongo.UpdateResult
 }
 
 func DeleteUser(objId primitive.ObjectID) error {
-	_, err := UserCollection().DeleteOne(context.Background(), bson.M{"_id": objId})
+	_, err := userCollection().DeleteOne(context.Background(), bson.M{"_id": objId})
 	if err != nil {
 		return err
 	}
@@ -130,7 +130,7 @@ func DeleteUser(objId primitive.ObjectID) error {
 // Exchanges
 // TODO: add more logic to check if users exist and own game
 func PostExchange(exchange *models.Exchange) (*mongo.InsertOneResult, error) {
-	result, err := ExchangeCollection().InsertOne(context.Background(), &exchange)
+	result, err := exchangeCollection().InsertOne(context.Background(), &exchange)
 	if err != nil {
 		return nil, err
 	}
@@ -139,14 +139,14 @@ func PostExchange(exchange *models.Exchange) (*mongo.InsertOneResult, error) {
 
 func GetExchange(objId primitive.ObjectID) (*models.Exchange, error) {
 	var exchange models.Exchange
-	if err := ExchangeCollection().FindOne(context.Background(), bson.M{"_id": objId}).Decode(&exchange); err != nil {
+	if err := exchangeCollection().FindOne(context.Background(), bson.M{"_id": objId}).Decode(&exchange); err != nil {
 		return nil, err
 	}
 	return &exchange, nil
 }
 
 func PatchExchange(objId primitive.ObjectID, exchangeStatus *models.ExchangeStatus) (*mongo.UpdateResult, error) {
-	result, err := ExchangeCollection().UpdateOne(context.Background(), bson.M{"_id": objId}, bson.M{"$set": bson.M{"status": &exchangeStatus}})
+	result, err := exchangeCollection().UpdateOne(context.Background(), bson.M{"_id": objId}, bson.M{"$set": bson.M{"status": &exchangeStatus}})
 	if err != nil {
 		return nil, err
 	}
