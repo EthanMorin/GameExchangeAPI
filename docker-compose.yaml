@@ -5,6 +5,7 @@ services:
     build: ./games_proxy
     ports:
       - "80:80"
+      - "8080"
     depends_on:
       - api0
       - api1
@@ -12,6 +13,18 @@ services:
     restart: on-failure
     networks:
       - exchange
+  proxexporter:
+    image: nginx/nginx-prometheus-exporter:latest
+    depends_on:
+      - proxy
+      - prometheus
+    environment:
+      - NGINX_PROMETHEUS_EXPORTER_LISTEN_ADDRESS=0.0.0.0:9113
+      - NGINX_PROMETHEUS_EXPORTER_NGINX_UPSTREAMS=http://proxy:8080/metrics
+    restart: on-failure
+    networks:
+      - exchange
+
   # APIS
   api0:
     build: ./games_api
@@ -43,6 +56,7 @@ services:
     restart: on-failure
     networks:
       - exchange
+
   # DataBase
   database:
     image: mongo:latest
@@ -53,6 +67,7 @@ services:
     restart: on-failure
     networks:
       - exchange
+
   # Email Service
   email:
     build: ./games_email
@@ -63,6 +78,7 @@ services:
     restart: on-failure
     networks:
       - exchange
+
   # Zoo Keeper: https://hub.docker.com/r/bitnami/zookeeper !!might not be needed!!
   zookeeper:
     image: bitnami/zookeeper:latest
@@ -75,6 +91,7 @@ services:
     restart: on-failure
     networks:
       - exchange
+
   # Kafka: https://hub.docker.com/r/bitnami/kafka
   kafka:
     image: bitnami/kafka:latest
@@ -94,11 +111,16 @@ services:
   # kafka Exporter
   kafexporter:
     image: bitnami/kafka-exporter:latest
+    depends_on:
+      - kafka
+      - prometheus
     environment:
-        - KAFKA_BROKER=kafka:9092
-        - KAFKA_EXPORTER_LISTEN_ADDRESS=kafexporter:9308
+      - KAFKA_BROKER=kafka:9092
+      - KAFKA_EXPORTER_LISTEN_ADDRESS=kafexporter:9308
+    restart: on-failure
     networks:
-        - exchange
+      - exchange
+
   # Promethius: https://hub.docker.com/r/bitnami/prometheus
   prometheus:
     build: ./games_prometheus
@@ -106,14 +128,14 @@ services:
       - "9090:9090"
     volumes:
       - pro_data:/etc/prometheus_data
-      # - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     restart: on-failure
     networks:
       - exchange
+
   # Grafana
   grafana:
     image: grafana/grafana:latest
-    ports: 
+    ports:
       - "3000:3000"
     volumes:
       - graf_data:/var/lib/grafana
