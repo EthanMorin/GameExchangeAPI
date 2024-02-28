@@ -14,7 +14,7 @@ tags:
   - name: metrics
     description: Contians metrics for prometheus.
 paths:
-  /metics:
+  /metrics:
     get:
       tags:
         - metrics

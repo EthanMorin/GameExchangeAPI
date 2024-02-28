@@ -92,20 +92,32 @@ services:
     networks:
       - exchange
   # Promethius: https://hub.docker.com/r/bitnami/prometheus
-  # prometheus:
-  #   build: ./games_prometheus
-  #   ports:
-  #     - "9090:9090"
-  #   volumes:
-  #     - pro_data:/etc/prometheus_data
-  #   restart: on-failure
-  #   networks:
-  #     - exchange
+  prometheus:
+    build: ./games_prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - pro_data:/etc/prometheus_data
+      # - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: on-failure
+    networks:
+      - exchange
+  
+  grafana:
+    image: grafana/grafana:latest
+    ports: 
+      - "3000:3000"
+    volumes:
+      - graf_data:/var/lib/grafana
+    networks:
+      - exchange
+
 volumes:
   db_data: {}
   kafka_data: {}
   zoo_data: {}
   pro_data: {}
+  graf_data: {}
 networks:
   exchange:
     driver: bridge

@@ -11,8 +11,10 @@ import (
 
 type API struct{}
 
-// GetMetics implements ServerInterface.
-func (a *API) GetMetics(c *gin.Context) {
+type metrics struct{}
+
+// GetMetrics implements ServerInterface.
+func (a *API) GetMetrics(c *gin.Context) {
 	promhttp.Handler()
 }
 
