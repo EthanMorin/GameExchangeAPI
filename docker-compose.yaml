@@ -91,6 +91,14 @@ services:
     restart: on-failure
     networks:
       - exchange
+  # kafka Exporter
+  kafexporter:
+    image: bitnami/kafka-exporter:latest
+    environment:
+        - KAFKA_BROKER=kafka:9092
+        - KAFKA_EXPORTER_LISTEN_ADDRESS=kafexporter:9308
+    networks:
+        - exchange
   # Promethius: https://hub.docker.com/r/bitnami/prometheus
   prometheus:
     build: ./games_prometheus
@@ -102,7 +110,7 @@ services:
     restart: on-failure
     networks:
       - exchange
-  
+  # Grafana
   grafana:
     image: grafana/grafana:latest
     ports: 

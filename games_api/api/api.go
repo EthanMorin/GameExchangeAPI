@@ -6,16 +6,35 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/prometheus/client_golang/prometheus"
+	// "github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type API struct{}
 
-type metrics struct{}
+type metrics struct {
+	devices prometheus.Gauge
+}
+
+func NewMetrics(reg prometheus.Registerer) *metrics {
+	m := &metrics{
+		devices: prometheus.NewGauge(prometheus.GaugeOpts{
+			Namespace: "games_api",
+			Name:      "connected_devices",
+			Help:      "Number of currently connected devices",
+		}),
+	}
+	reg.MustRegister(m.devices)
+	return m
+}
 
 // GetMetrics implements ServerInterface.
 func (a *API) GetMetrics(c *gin.Context) {
-	promhttp.Handler()
+	// reg := prometheus.NewRegistry()
+	// m := NewMetrics(reg)
+	// m.devices.Set(float64(len(dvs)))
+	// promHandler := promhttp.HandlerFor(reg, promhttp.HandlerOpts{})
+	// promHandler
 }
 
 // PostGames implements ServerInterface.
