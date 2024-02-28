@@ -14,16 +14,6 @@ tags:
   - name: metrics
     description: Contians metrics for prometheus.
 paths:
-  /metrics:
-    get:
-      tags:
-        - metrics
-      summary: Returns API metrics
-      responses:
-        "200":
-          description: Metrics contacted
-        "500":
-          description: Metrics down
   /games:
     get:
       tags:
