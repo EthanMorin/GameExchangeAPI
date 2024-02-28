@@ -6,9 +6,15 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type API struct{}
+
+// GetMetics implements ServerInterface.
+func (a *API) GetMetics(c *gin.Context) {
+	promhttp.Handler()
+}
 
 // PostGames implements ServerInterface.
 func (*API) PostGames(c *gin.Context) {

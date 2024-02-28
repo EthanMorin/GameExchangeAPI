@@ -11,10 +11,19 @@ tags:
     description: Contains a list of users, and actions to that list.
   - name: exchange
     description: Contains a list of exchanges, and actions to that list.
+  - name: metrics
+    description: Contians metrics for prometheus.
 paths:
-  # /test:
-  #   get:
-  #     summary: Test tin
+  /metics:
+    get:
+      tags:
+        - metrics
+      summary: Returns API metrics
+      responses:
+        "200":
+          description: Metrics contacted
+        "500":
+          description: Metrics down
   /games:
     get:
       tags:
