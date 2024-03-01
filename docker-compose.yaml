@@ -16,14 +16,14 @@ services:
   proxexporter:
     image: nginx/nginx-prometheus-exporter:latest
     depends_on:
-      - proxy
-      - prometheus
+        - proxy
+        - prometheus
     environment:
-      - NGINX_PROMETHEUS_EXPORTER_LISTEN_ADDRESS=0.0.0.0:9113
-      - NGINX_PROMETHEUS_EXPORTER_NGINX_UPSTREAMS=http://proxy:8080/metrics
+        - NGINX_PROMETHEUS_EXPORTER_LISTEN_ADDRESS=0.0.0.0:9113
+        - NGINX_PROMETHEUS_EXPORTER_NGINX_UPSTREAMS=http://proxy:8080/metrics
     restart: on-failure
     networks:
-      - exchange
+        - exchange
 
   # APIS
   api0:
