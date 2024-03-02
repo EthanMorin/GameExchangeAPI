@@ -23,11 +23,17 @@ func (h groupHandler) ConsumeClaim(sess sarama.ConsumerGroupSession, claim saram
         case "user":
             var user models.UserEmail
             _ = json.Unmarshal(msg.Value, &user)
-            services.SendUserEmail(&user)
+            err := services.SendUserEmail(&user)
+            if err != nil {
+                log.Fatalf("Couldnt send email: {%s}", err)
+            }
         case "exchange":
             var offer models.EchangeEmails
             _ = json.Unmarshal(msg.Value, &offer)
-            services.SendExchangeEmail(string(msg.Key), &offer)
+            err := services.SendExchangeEmail(string(msg.Key), &offer)
+            if err != nil {
+                log.Fatalf("Couldnt send email: {%s}", err)
+            }
         }
         sess.MarkMessage(msg, "")
     }

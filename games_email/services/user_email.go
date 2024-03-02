@@ -6,33 +6,18 @@ package services
 
 import (
 	"games-email/models"
-	"log"
 
 	"github.com/wneessen/go-mail"
 )
 
 // TODO: change emails to dynamic ones once fiture out fix
-func SendUserEmail(user *models.UserEmail) {
-	message := mail.NewMsg()
-	if err := message.From("kurt.heaney@ethereal.email"); err != nil {
-		log.Fatalf("Failed to set sender: {%s}", err)
-	}
-	
-	// Why does this work when i type it out but not pull from the model?
-	if err := message.To("kurt.heaney@ethereal.email"); err != nil {
-		// if err := message.To(*user.Email); err != nil {
-		log.Fatalf("Failed to set recipient: {%s}", err)
-	}
-
+func SendUserEmail(user *models.UserEmail) error {
+	message := mail.NewMsg()	
 	message.Subject("User Password Update")
 	message.SetBodyString(mail.TypeTextPlain, "Your Password has been updated")
-
-	c, err := mail.NewClient("smtp.ethereal.email", mail.WithPort(587), mail.WithSMTPAuth(mail.SMTPAuthPlain),
-		mail.WithUsername("kurt.heaney@ethereal.email"), mail.WithPassword("2g8QsnyNdt2zhChpQ8"))
+	err := sendEmail(message, *user.Email)
 	if err != nil {
-		log.Fatalf("failed to create mail client: {%s}", err)
+		return err
 	}
-	if err := c.DialAndSend(message); err != nil {
-		log.Fatalf("failed to send mail: {%s}", err)
-	}
+	return nil
 }

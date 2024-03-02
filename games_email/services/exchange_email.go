@@ -5,38 +5,36 @@ package services
 // Pass: 2g8QsnyNdt2zhChpQ8
 
 import (
+	"errors"
 	"games-email/models"
-	"log"
 
 	"github.com/wneessen/go-mail"
 )
 
-// TODO: change emails to dynamic ones once fiture out fix
-func SendExchangeEmail(topic string, exchange *models.EchangeEmails) {
+func SendExchangeEmail(topic string, exchange *models.EchangeEmails) error {
 	message := mail.NewMsg()
+
 	switch topic {
 	case "exchange_created":
 		message.Subject("Offer Created")
-		message.SetBodyString(mail.TypeTextPlain, "You have a pending offer")
-		// if err := message.To(*exchange.TraderEmail); err != nil {
-		if err := message.To("kurt.heaney@ethereal.email"); err != nil {
-			log.Fatalf("Failed to set recipient: {%s}", err)
+		message.SetBodyString(mail.TypeTextPlain, "You have a pending offer!")
+		err := sendEmail(message, *exchange.TraderEmail)
+		if err != nil {
+			return err
 		}
-		sendEmail(message)
-		message.SetBodyString(mail.TypeTextPlain, "Your offer has been created")
+		message.SetBodyString(mail.TypeTextPlain, "Your offer has been created!")
 	case "exchange_accepted":
 		message.Subject("Offer Accepted")
-		message.SetBodyString(mail.TypeTextPlain, "Your offer has been accepted")
+		message.SetBodyString(mail.TypeTextPlain, "Your offer has been accepted!")
 	case "exchange_rejected":
 		message.Subject("Offer Rejected")
-		message.SetBodyString(mail.TypeTextPlain, "Your offer has been rejected")
+		message.SetBodyString(mail.TypeTextPlain, "Your offer has been rejected!")
+	default:
+		return errors.New("topic doesnt match")
 	}
-	if err := message.From("kurt.heaney@ethereal.email"); err != nil {
-		log.Fatalf("Failed to set sender: {%s}", err)
+	err := sendEmail(message, *exchange.TradeeEmail)
+	if err != nil {
+		return err
 	}
-	// if err := message.To(*exchange.TradeeEmail); err != nil {
-	if err := message.To("kurt.heaney@ethereal.email"); err != nil {
-		log.Fatalf("Failed to set recipient: {%s}", err)
-	}
-	sendEmail(message)
+	return nil
 }
