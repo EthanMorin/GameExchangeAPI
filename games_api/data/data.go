@@ -144,8 +144,8 @@ func GetExchange(objId primitive.ObjectID) (*models.Exchange, error) {
 	return &exchange, nil
 }
 
-func PatchExchange(objId primitive.ObjectID, exchangeStatus *models.ExchangeStatus) (*mongo.UpdateResult, error) {
-	result, err := exchangeCollection().UpdateOne(context.Background(), bson.M{"_id": objId}, bson.M{"$set": bson.M{"status": &exchangeStatus}})
+func PatchExchange(objId primitive.ObjectID, exchangeStatus string) (*mongo.UpdateResult, error) {
+	result, err := exchangeCollection().UpdateOne(context.Background(), bson.M{"_id": objId}, bson.M{"$set": bson.M{"status": exchangeStatus}})
 	if err != nil {
 		return nil, err
 	}

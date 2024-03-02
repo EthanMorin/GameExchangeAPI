@@ -131,18 +131,20 @@ func (*API) PatchUsersId(c *gin.Context, id string) {
 	}
 	services.PatchUser(id, &updatedUser)
 	c.JSON(http.StatusOK, &updatedUser)
-	// mq.UpdateUserPass(&updatedUser)
 }
 
 // PatchExchangeId implements ServerInterface.
 func (*API) PatchExchangesId(c *gin.Context, id string) {
-	var exchangeStatus models.ExchangeStatus
-	err := c.ShouldBindJSON(&exchangeStatus)
-	if err != nil {
+	var exchange models.PatchExchangesIdJSONBody
+	if err := c.ShouldBindJSON(&exchange); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	result, err := services.PatchExchangesId(id, &exchangeStatus)
+	if *exchange.Status == "pending" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "please enter a valid status"})
+		return 
+	}
+	result, err := services.PatchExchangesId(id, string(*exchange.Status))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return

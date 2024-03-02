@@ -364,11 +364,6 @@ components:
             bson: ownerid,omitempty
         condition:
           type: string
-          enum:
-            - mint
-            - good
-            - fair
-            - poor
     User:
       type: object
       properties:
@@ -410,7 +405,4 @@ components:
           type: string
         status:
           type: string
-          enum:
-            - pending
-            - accepted
-            - declined
+

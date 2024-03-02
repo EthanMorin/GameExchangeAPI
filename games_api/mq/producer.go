@@ -2,6 +2,7 @@ package mq
 
 import (
 	"encoding/json"
+	"errors"
 	"games-api/models"
 	"log"
 
@@ -43,36 +44,35 @@ func CreateExchange(exchange *models.Exchange) {
 	producer.SendMessage(msg)
 }
 
-func UpdateExchangeAccepted(exchange *models.Exchange) {
+func UpdateExchange(exchange *models.Exchange) error {
 	producer, err := sarama.NewSyncProducer([]string{"kafka:9092"}, nil)
 	if err != nil {
-		log.Fatalf("couldnt create producer: {%s}", err)
+		return errors.New("couldn't create producer: " + err.Error())
 	}
 	exchangeJson, err := json.Marshal(exchange)
 	if err != nil {
-		log.Fatalf("couldnt Marshal json: {%s}", err)
+		return errors.New("couldn't Marshal json: " + err.Error())
 	}
-	msg := &sarama.ProducerMessage{
-		Topic: "exchange",
-		Key:   sarama.StringEncoder("exchange_accepted"),
-		Value: sarama.StringEncoder(exchangeJson),
-	}
-	producer.SendMessage(msg)
-}
 
-func UpdateExchangeRejected(exchange *models.Exchange) {
-	producer, err := sarama.NewSyncProducer([]string{"kafka:9092"}, nil)
+	var msg *sarama.ProducerMessage
+	if *exchange.Status == "accepted" {
+			msg = &sarama.ProducerMessage{
+					Topic: "exchange",
+					Key:   sarama.StringEncoder("exchange_accepted"),
+					Value: sarama.StringEncoder(exchangeJson),
+			}
+	} else {
+			msg = &sarama.ProducerMessage{
+					Topic: "exchange",
+					Key:   sarama.StringEncoder("exchange_rejected"),
+					Value: sarama.StringEncoder(exchangeJson),
+			}
+	}
+
+	_, _, err = producer.SendMessage(msg)
 	if err != nil {
-		log.Fatalf("couldnt create producer: {%s}", err)
+		return errors.New("failed to send message: " + err.Error())
 	}
-	exchangeJson, err := json.Marshal(exchange)
-	if err != nil {
-		log.Fatalf("couldnt Marshal json: {%s}", err)
-	}
-	msg := &sarama.ProducerMessage{
-		Topic: "exchange",
-		Key:   sarama.StringEncoder("exchange_rejected"),
-		Value: sarama.StringEncoder(exchangeJson),
-	}
-	producer.SendMessage(msg)
+
+	return nil
 }

@@ -18,26 +18,32 @@ type groupHandler struct{}
 func (groupHandler) Setup(_ sarama.ConsumerGroupSession) error   { return nil }
 func (groupHandler) Cleanup(_ sarama.ConsumerGroupSession) error { return nil }
 func (h groupHandler) ConsumeClaim(sess sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
-    for msg := range claim.Messages() {
-        switch msg.Topic {
-        case "user":
-            var user models.UserEmail
-            _ = json.Unmarshal(msg.Value, &user)
-            err := services.SendUserEmail(&user)
-            if err != nil {
-                log.Fatalf("Couldnt send email: {%s}", err)
-            }
-        case "exchange":
-            var offer models.EchangeEmails
-            _ = json.Unmarshal(msg.Value, &offer)
-            err := services.SendExchangeEmail(string(msg.Key), &offer)
-            if err != nil {
-                log.Fatalf("Couldnt send email: {%s}", err)
-            }
-        }
-        sess.MarkMessage(msg, "")
-    }
-    return nil
+	for msg := range claim.Messages() {
+		switch msg.Topic {
+		case "user":
+			var user models.UserEmail
+			err := json.Unmarshal(msg.Value, &user)
+			if err != nil {
+				log.Fatalf("%s: {%s}", err, msg.Value)
+			}
+			err = services.SendUserEmail(&user)
+			if err != nil {
+				log.Fatalf("Couldnt send email: {%s}", err)
+			}
+		case "exchange":
+			var offer models.EchangeEmails
+			err := json.Unmarshal(msg.Value, &offer)
+			if err != nil {
+				log.Fatalf("%s: {%s}", err, msg.Value)
+			}
+			err = services.SendExchangeEmail(string(msg.Key), &offer)
+			if err != nil {
+				log.Fatalf("Couldnt send email: {%s}", err)
+			}
+		}
+		sess.MarkMessage(msg, "")
+	}
+	return nil
 }
 
 func main() {

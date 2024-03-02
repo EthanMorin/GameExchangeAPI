@@ -128,7 +128,7 @@ func DeleteGame(objId string) error {
 
 // Exchange
 func PostExchange(traderEmail string, tradeeEmail string, exchange *models.Exchange) (*mongo.InsertOneResult, error){
-	status := models.ExchangeStatusPending
+	status := "pending"
 	exchange.Status = &status
 	exchange.TradeeEmail = &tradeeEmail
 	exchange.TraderEmail = &traderEmail
@@ -152,8 +152,7 @@ func GetExchange(objId string) (*models.Exchange, error) {
 	return exchange, nil
 }
 
-// TODO: TEST THIS
-func PatchExchangesId(objId string, exchangeStatus *models.ExchangeStatus) (*mongo.UpdateResult, error){
+func PatchExchangesId(objId string, exchangeStatus string) (*mongo.UpdateResult, error){
 	exchangeObjId, err := primitive.ObjectIDFromHex(objId)
 	if err != nil {
 		return nil, errors.New("Invalid object id")
@@ -163,11 +162,9 @@ func PatchExchangesId(objId string, exchangeStatus *models.ExchangeStatus) (*mon
 		return nil, errors.New("Couldnt patch exchange")
 	}
 	exchange, _ := GetExchange(exchangeObjId.Hex())
-	switch string(*exchangeStatus) {
-	case "accepted":
-		mq.UpdateExchangeAccepted(exchange)
-	case "declined":
-		mq.UpdateExchangeRejected(exchange)
+	err = mq.UpdateExchange(exchange)
+	if err != nil {
+		return nil, err
 	}
 	return result, nil
 }
