@@ -105,6 +105,11 @@ func (*API) GetExchangesId(c *gin.Context, id string) {
 	c.JSON(http.StatusOK, result)
 }
 
+// GetExchangesOwnerEmailExchangeid implements ServerInterface.
+func (a *API) GetExchangesOwnerEmailExchangeid(c *gin.Context, ownerEmail string, exchangeid string) {
+	panic("unimplemented")
+}
+
 // PatchGamesId implements ServerInterface.
 func (*API) PatchGamesId(c *gin.Context, id string) {
 	var updatedStatus models.Game
@@ -133,18 +138,20 @@ func (*API) PatchUsersId(c *gin.Context, id string) {
 	c.JSON(http.StatusOK, &updatedUser)
 }
 
-// PatchExchangeId implements ServerInterface.
-func (*API) PatchExchangesId(c *gin.Context, id string) {
-	var exchange models.PatchExchangesIdJSONBody
+// PatchExchangesOwnerEmailExchangeid implements ServerInterface.
+func (a *API) PatchExchangesOwnerEmailExchangeid(c *gin.Context, ownerEmail string, exchangeid string) {
+	var exchange models.PatchExchangesOwnerEmailExchangeidJSONBody
 	if err := c.ShouldBindJSON(&exchange); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	if *exchange.Status == "pending" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "please enter a valid status"})
-		return 
+		return
 	}
-	result, err := services.PatchExchangesId(id, string(*exchange.Status))
+	// TODO: check if user is the owner of the game
+	
+	result, err := services.PatchExchangesId(exchangeid, string(*exchange.Status))
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
@@ -172,9 +179,9 @@ func (*API) DeleteUsersId(c *gin.Context, id string) {
 	c.Status(http.StatusNoContent)
 }
 
-// DeleteExchangesId implements ServerInterface.
-func (a *API) DeleteExchangesId(c *gin.Context, id string) {
-	err := services.DeleteExchange(id)
+// DeleteExchangesOwnerEmailExchangeid implements ServerInterface.
+func (a *API) DeleteExchangesOwnerEmailExchangeid(c *gin.Context, ownerEmail string, exchangeid string) {
+	err := services.DeleteExchange(exchangeid)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

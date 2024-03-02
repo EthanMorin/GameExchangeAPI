@@ -169,3 +169,7 @@ func GetObjectID(id string) (primitive.ObjectID, error) {
 	}
 	return objId, nil
 }
+
+func CheckUserOwnsGame(ownerid string, gameid string) bool {
+	
+}

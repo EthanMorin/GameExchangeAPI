@@ -7,11 +7,11 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// Defines values for PatchExchangesIdJSONBodyStatus.
+// Defines values for PatchExchangesOwnerEmailExchangeidJSONBodyStatus.
 const (
-	Accepted PatchExchangesIdJSONBodyStatus = "accepted"
-	Declined PatchExchangesIdJSONBodyStatus = "declined"
-	Pending  PatchExchangesIdJSONBodyStatus = "pending"
+	Accepted PatchExchangesOwnerEmailExchangeidJSONBodyStatus = "accepted"
+	Declined PatchExchangesOwnerEmailExchangeidJSONBodyStatus = "declined"
+	Pending  PatchExchangesOwnerEmailExchangeidJSONBodyStatus = "pending"
 )
 
 // Defines values for PatchGamesIdJSONBodyStatus.
@@ -50,13 +50,13 @@ type User struct {
 	Username      *string             `json:"username,omitempty"`
 }
 
-// PatchExchangesIdJSONBody defines parameters for PatchExchangesId.
-type PatchExchangesIdJSONBody struct {
-	Status *PatchExchangesIdJSONBodyStatus `json:"status,omitempty"`
+// PatchExchangesOwnerEmailExchangeidJSONBody defines parameters for PatchExchangesOwnerEmailExchangeid.
+type PatchExchangesOwnerEmailExchangeidJSONBody struct {
+	Status *PatchExchangesOwnerEmailExchangeidJSONBodyStatus `json:"status,omitempty"`
 }
 
-// PatchExchangesIdJSONBodyStatus defines parameters for PatchExchangesId.
-type PatchExchangesIdJSONBodyStatus string
+// PatchExchangesOwnerEmailExchangeidJSONBodyStatus defines parameters for PatchExchangesOwnerEmailExchangeid.
+type PatchExchangesOwnerEmailExchangeidJSONBodyStatus string
 
 // PostExchangesTraderEmailTradeeEmailJSONBody defines parameters for PostExchangesTraderEmailTradeeEmail.
 type PostExchangesTraderEmailTradeeEmailJSONBody struct {
@@ -76,8 +76,8 @@ type PatchUsersIdJSONBody struct {
 	Password *string `json:"password,omitempty"`
 }
 
-// PatchExchangesIdJSONRequestBody defines body for PatchExchangesId for application/json ContentType.
-type PatchExchangesIdJSONRequestBody PatchExchangesIdJSONBody
+// PatchExchangesOwnerEmailExchangeidJSONRequestBody defines body for PatchExchangesOwnerEmailExchangeid for application/json ContentType.
+type PatchExchangesOwnerEmailExchangeidJSONRequestBody PatchExchangesOwnerEmailExchangeidJSONBody
 
 // PostExchangesTraderEmailTradeeEmailJSONRequestBody defines body for PostExchangesTraderEmailTradeeEmail for application/json ContentType.
 type PostExchangesTraderEmailTradeeEmailJSONRequestBody PostExchangesTraderEmailTradeeEmailJSONBody

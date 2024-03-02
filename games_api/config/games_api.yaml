@@ -267,18 +267,23 @@ paths:
           description: Invalid input
         "500":
           description: Internal server error
-  /exchanges/{id}:
+  /exchanges/{ownerEmail}/{exchangeid}:
     patch:
       tags:
         - exchange
       summary: Update the status of an exchange
       parameters:
         - in: path
-          name: id
+          name: exchangeid
           required: true
           schema:
             type: string
           description: The exchange ID.
+        - in: path
+          name: ownerEmail
+          required: true
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -307,11 +312,16 @@ paths:
       summary: Returns one exchange by ID.
       parameters:
         - in: path
-          name: id
+          name: exchangeid
           required: true
           schema:
             type: string
           description: The exchange ID.
+        - in: path
+          name: ownerEmail
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: JSON of the found exchange.
@@ -327,16 +337,49 @@ paths:
       summary: Removes an exchange.
       parameters:
         - in: path
-          name: id
+          name: exchangeid
           required: true
           schema:
             type: string
           description: The exchange ID.
+        - in: path
+          name: ownerEmail
+          required: true
+          schema:
+            type: string
       responses:
         "204":
           description: Exchange removed successfully.
         "404":
           description: Exchange not found.
+  /exchanges/{useremail}/{status}:
+    get:
+      tags:
+        - exchange
+      summary: Returns all echanges that match the given status.
+      parameters:
+        - in: path
+          name: useremail
+          required: true
+          schema:
+            type: string
+          description: the trader's email
+        - in: path
+          name: status
+          required: true
+          schema:
+            type: string
+            enum:
+              - pending
+              - accepted
+              - declined
+      responses:
+        "200":
+          description: Exchanges
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Exchange"
 components:
   schemas:
     Game:
@@ -405,4 +448,3 @@ components:
           type: string
         status:
           type: string
-

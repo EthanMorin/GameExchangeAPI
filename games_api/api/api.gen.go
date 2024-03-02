@@ -21,14 +21,14 @@ import (
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 	// Removes an exchange.
-	// (DELETE /exchanges/{id})
-	DeleteExchangesId(c *gin.Context, id string)
+	// (DELETE /exchanges/{ownerEmail}/{exchangeid})
+	DeleteExchangesOwnerEmailExchangeid(c *gin.Context, ownerEmail string, exchangeid string)
 	// Returns one exchange by ID.
-	// (GET /exchanges/{id})
-	GetExchangesId(c *gin.Context, id string)
+	// (GET /exchanges/{ownerEmail}/{exchangeid})
+	GetExchangesOwnerEmailExchangeid(c *gin.Context, ownerEmail string, exchangeid string)
 	// Update the status of an exchange
-	// (PATCH /exchanges/{id})
-	PatchExchangesId(c *gin.Context, id string)
+	// (PATCH /exchanges/{ownerEmail}/{exchangeid})
+	PatchExchangesOwnerEmailExchangeid(c *gin.Context, ownerEmail string, exchangeid string)
 	// Create a new exchange
 	// (POST /exchanges/{trader_email}/{tradee_email})
 	PostExchangesTraderEmailTradeeEmail(c *gin.Context, traderEmail string, tradeeEmail string)
@@ -73,17 +73,26 @@ type ServerInterfaceWrapper struct {
 
 type MiddlewareFunc func(c *gin.Context)
 
-// DeleteExchangesId operation middleware
-func (siw *ServerInterfaceWrapper) DeleteExchangesId(c *gin.Context) {
+// DeleteExchangesOwnerEmailExchangeid operation middleware
+func (siw *ServerInterfaceWrapper) DeleteExchangesOwnerEmailExchangeid(c *gin.Context) {
 
 	var err error
 
-	// ------------- Path parameter "id" -------------
-	var id string
+	// ------------- Path parameter "ownerEmail" -------------
+	var ownerEmail string
 
-	err = runtime.BindStyledParameterWithOptions("simple", "id", c.Param("id"), &id, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	err = runtime.BindStyledParameterWithOptions("simple", "ownerEmail", c.Param("ownerEmail"), &ownerEmail, runtime.BindStyledParameterOptions{Explode: false, Required: true})
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter id: %w", err), http.StatusBadRequest)
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter ownerEmail: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "exchangeid" -------------
+	var exchangeid string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "exchangeid", c.Param("exchangeid"), &exchangeid, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter exchangeid: %w", err), http.StatusBadRequest)
 		return
 	}
 
@@ -94,20 +103,29 @@ func (siw *ServerInterfaceWrapper) DeleteExchangesId(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.DeleteExchangesId(c, id)
+	siw.Handler.DeleteExchangesOwnerEmailExchangeid(c, ownerEmail, exchangeid)
 }
 
-// GetExchangesId operation middleware
-func (siw *ServerInterfaceWrapper) GetExchangesId(c *gin.Context) {
+// GetExchangesOwnerEmailExchangeid operation middleware
+func (siw *ServerInterfaceWrapper) GetExchangesOwnerEmailExchangeid(c *gin.Context) {
 
 	var err error
 
-	// ------------- Path parameter "id" -------------
-	var id string
+	// ------------- Path parameter "ownerEmail" -------------
+	var ownerEmail string
 
-	err = runtime.BindStyledParameterWithOptions("simple", "id", c.Param("id"), &id, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	err = runtime.BindStyledParameterWithOptions("simple", "ownerEmail", c.Param("ownerEmail"), &ownerEmail, runtime.BindStyledParameterOptions{Explode: false, Required: true})
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter id: %w", err), http.StatusBadRequest)
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter ownerEmail: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "exchangeid" -------------
+	var exchangeid string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "exchangeid", c.Param("exchangeid"), &exchangeid, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter exchangeid: %w", err), http.StatusBadRequest)
 		return
 	}
 
@@ -118,20 +136,29 @@ func (siw *ServerInterfaceWrapper) GetExchangesId(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.GetExchangesId(c, id)
+	siw.Handler.GetExchangesOwnerEmailExchangeid(c, ownerEmail, exchangeid)
 }
 
-// PatchExchangesId operation middleware
-func (siw *ServerInterfaceWrapper) PatchExchangesId(c *gin.Context) {
+// PatchExchangesOwnerEmailExchangeid operation middleware
+func (siw *ServerInterfaceWrapper) PatchExchangesOwnerEmailExchangeid(c *gin.Context) {
 
 	var err error
 
-	// ------------- Path parameter "id" -------------
-	var id string
+	// ------------- Path parameter "ownerEmail" -------------
+	var ownerEmail string
 
-	err = runtime.BindStyledParameterWithOptions("simple", "id", c.Param("id"), &id, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	err = runtime.BindStyledParameterWithOptions("simple", "ownerEmail", c.Param("ownerEmail"), &ownerEmail, runtime.BindStyledParameterOptions{Explode: false, Required: true})
 	if err != nil {
-		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter id: %w", err), http.StatusBadRequest)
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter ownerEmail: %w", err), http.StatusBadRequest)
+		return
+	}
+
+	// ------------- Path parameter "exchangeid" -------------
+	var exchangeid string
+
+	err = runtime.BindStyledParameterWithOptions("simple", "exchangeid", c.Param("exchangeid"), &exchangeid, runtime.BindStyledParameterOptions{Explode: false, Required: true})
+	if err != nil {
+		siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter exchangeid: %w", err), http.StatusBadRequest)
 		return
 	}
 
@@ -142,7 +169,7 @@ func (siw *ServerInterfaceWrapper) PatchExchangesId(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.PatchExchangesId(c, id)
+	siw.Handler.PatchExchangesOwnerEmailExchangeid(c, ownerEmail, exchangeid)
 }
 
 // PostExchangesTraderEmailTradeeEmail operation middleware
@@ -401,9 +428,9 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 		ErrorHandler:       errorHandler,
 	}
 
-	router.DELETE(options.BaseURL+"/exchanges/:id", wrapper.DeleteExchangesId)
-	router.GET(options.BaseURL+"/exchanges/:id", wrapper.GetExchangesId)
-	router.PATCH(options.BaseURL+"/exchanges/:id", wrapper.PatchExchangesId)
+	router.DELETE(options.BaseURL+"/exchanges/:ownerEmail/:exchangeid", wrapper.DeleteExchangesOwnerEmailExchangeid)
+	router.GET(options.BaseURL+"/exchanges/:ownerEmail/:exchangeid", wrapper.GetExchangesOwnerEmailExchangeid)
+	router.PATCH(options.BaseURL+"/exchanges/:ownerEmail/:exchangeid", wrapper.PatchExchangesOwnerEmailExchangeid)
 	router.POST(options.BaseURL+"/exchanges/:trader_email/:tradee_email", wrapper.PostExchangesTraderEmailTradeeEmail)
 	router.GET(options.BaseURL+"/games", wrapper.GetGames)
 	router.POST(options.BaseURL+"/games", wrapper.PostGames)
@@ -420,27 +447,28 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 // Base64 encoded, gzipped, json marshaled Swagger object
 var swaggerSpec = []string{
 
-	"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",
+	"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",
 }
 
 // GetSwagger returns the content of the embedded swagger specification file
