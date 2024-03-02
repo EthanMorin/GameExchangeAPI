@@ -17,10 +17,9 @@ services:
     image: nginx/nginx-prometheus-exporter:latest
     depends_on:
         - proxy
-        - prometheus
-    environment:
-        - NGINX_PROMETHEUS_EXPORTER_LISTEN_ADDRESS=0.0.0.0:9113
-        - NGINX_PROMETHEUS_EXPORTER_NGINX_UPSTREAMS=http://proxy:8080/metrics
+    command: '--nginx.scrape-uri=http://proxy:8080/stub_status'
+    ports:
+      - '9113'
     restart: on-failure
     networks:
         - exchange
@@ -72,13 +71,14 @@ services:
   dbexporter:
     image: bitnami/mongodb-exporter:latest
     environment:
-      - MONGODB_URI=database:27017
+        - MONGODB_URI=mongodb://monitor:reader@database:27017/?authSource=Games
+    ports:
+        - "9216"
     depends_on:
-      - database
+        - database
     restart: on-failure
     networks:
-      - exchange
-
+        - exchange
   # Email Service
   email:
     build: ./games_email
