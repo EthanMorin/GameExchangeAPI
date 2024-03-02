@@ -8,7 +8,7 @@ import (
 )
 
 func sendEmail(message *mail.Msg, recipient string) error {
-	if err := message.From("kurt.heaney@ethereal.email"); err != nil {
+	if err := message.From("gamesapi@automated.com"); err != nil {
 		return errors.New("failed to set sender: " + err.Error())
 	}
 	c, err := mail.NewClient("smtp.ethereal.email", mail.WithPort(587), mail.WithSMTPAuth(mail.SMTPAuthPlain),
