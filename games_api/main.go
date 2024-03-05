@@ -5,7 +5,7 @@ import (
 	"games-api/data"
 	"github.com/gin-gonic/gin"
 	middleware "github.com/oapi-codegen/gin-middleware"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
+	ginmiddleware "github.com/zsais/go-gin-prometheus"
 )
 
 func newServer(gameApi *api.API) *gin.Engine {
@@ -14,7 +14,8 @@ func newServer(gameApi *api.API) *gin.Engine {
 		panic(err)
 	}
 	router := gin.Default()
-	router.GET("/metrics", gin.WrapH(promhttp.Handler()))
+	prom := ginmiddleware.NewPrometheus("gin")
+	prom.Use(router)
 	router.Use(middleware.OapiRequestValidator(swagger))
 	api.RegisterHandlers(router, gameApi)
 	return router

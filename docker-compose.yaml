@@ -16,13 +16,13 @@ services:
   proxexporter:
     image: nginx/nginx-prometheus-exporter:latest
     depends_on:
-        - proxy
-    command: '--nginx.scrape-uri=http://proxy:8080/stub_status'
+      - proxy
+    command: "--nginx.scrape-uri=http://proxy:8080/stub_status"
     ports:
-      - '9113'
+      - "9113"
     restart: on-failure
     networks:
-        - exchange
+      - exchange
 
   # APIS
   api0:
@@ -66,8 +66,7 @@ services:
     restart: on-failure
     networks:
       - exchange
-  # MongoDB Exporter 
-  # Still needs more work to fix not interacting with prometheus..
+  # MongoDB Exporter
   dbexporter:
     image: bitnami/mongodb-exporter:latest
     environment:
@@ -79,6 +78,7 @@ services:
     restart: on-failure
     networks:
         - exchange
+        
   # Email Service
   email:
     build: ./games_email

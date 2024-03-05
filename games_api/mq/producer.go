@@ -15,7 +15,7 @@ func UpdateUserPass(user *models.User) {
 	if err != nil {
 		log.Fatalf("couldnt create producer: {%s}", err)
 	}
-	userJson, err := json.Marshal(user)
+	userJson, err := json.Marshal(&user)
 	if err != nil {
 		log.Fatalf("couldnt Marshal json: {%s}", err)
 	}

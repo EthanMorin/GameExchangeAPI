@@ -10,12 +10,12 @@ import (
 	"github.com/wneessen/go-mail"
 )
 
-// TODO: change emails to dynamic ones once fiture out fix
 func SendUserEmail(user *models.UserEmail) error {
-	message := mail.NewMsg()	
-	message.Subject("User Password Update")
-	message.SetBodyString(mail.TypeTextPlain, "Your Password has been updated")
-	err := sendEmail(message, *user.Email)
+	message := mail.NewMsg()
+	message.Subject("Password Updated")
+	message.SetBodyString(mail.TypeTextPlain, "Your password has been updated!")
+	// err := sendEmail(message, *user.Email)
+	err := sendEmail(message, "kurt.heaney@ethereal.email")
 	if err != nil {
 		return err
 	}
